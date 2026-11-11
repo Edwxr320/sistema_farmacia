@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Frontend React + Vite de Pharma Plus. Las dependencias se instalan desde el package.json raíz (npm run build / npm run dev:web)."
+}

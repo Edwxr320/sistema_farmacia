@@ -1,0 +1,52 @@
+# Dependencias
+node_modules/
+frontend/node_modules/
+
+# Build del frontend (se genera con npm run build)
+frontend/dist/
+
+# Variables de entorno y credenciales (solo se versiona .env.example)
+.env
+.env.*
+!.env.example
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+credentials*.json
+secrets*.json
+
+# Registros, cobertura y temporales
+logs/
+*.log
+coverage/
+tmp/
+temp/
+.cache/
+scratchpad/
+*.tmp
+
+# Copias de seguridad, comprimidos y volcados de base de datos
+backup*/
+backups/
+*.bak
+*.zip
+*.tgz
+*.tar
+*.tar.gz
+*.7z
+*.rar
+*.sql.gz
+dump*.sql
+*_dump.sql
+
+# Imágenes subidas por los usuarios
+uploads/
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,149 @@
+/* Acceso único (/acceso) — diseño de Bocetos/ "Vistas Claro y Oscuro_Login" (PC y móvil). */
+.access {
+  --a-bg: radial-gradient(1200px 600px at 8% 0%, #d7e9ff 0%, transparent 60%),
+          radial-gradient(900px 600px at 100% 100%, #d9f3d0 0%, transparent 55%),
+          linear-gradient(135deg, #eef5ff 0%, #f6fbff 45%, #eef8ea 100%);
+  --a-text: #0d2a6b;
+  --a-muted: #3a4f7a;
+  --a-card: #ffffff;
+  --a-card-border: rgba(13, 42, 107, .08);
+  --a-card-shadow: 0 24px 60px rgba(13, 42, 107, .16);
+  --a-input-bg: #ffffff;
+  --a-input-border: #d5deee;
+  --a-input-text: #142347;
+  --a-placeholder: #7a88a6;
+  --a-icon: #43507a;
+  --a-accent: #2fae3f;
+  --a-accent-2: #1d9636;
+  --a-accent-text: #ffffff;
+  --a-link: #1565d8;
+  --a-avatar-bg: #dceaff;
+  --a-avatar: #1d6fe0;
+  --a-feature-bg: rgba(255, 255, 255, .75);
+  --a-feature-icon: #2a9a3c;
+  --a-toggle-bg: rgba(255, 255, 255, .8);
+  min-height: 100vh;
+  background: var(--a-bg);
+  color: var(--a-text);
+  position: relative;
+  overflow-x: hidden;
+}
+.access[data-theme="dark"] {
+  --a-bg: radial-gradient(900px 600px at 0% 0%, rgba(46, 140, 60, .35) 0%, transparent 60%),
+          radial-gradient(900px 700px at 100% 100%, rgba(80, 190, 40, .28) 0%, transparent 55%),
+          linear-gradient(135deg, #07100b 0%, #0d1a13 50%, #0a1610 100%);
+  --a-text: #ffffff;
+  --a-muted: #c7d4cb;
+  --a-card: rgba(22, 30, 26, .88);
+  --a-card-border: rgba(255, 255, 255, .1);
+  --a-card-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+  --a-input-bg: rgba(255, 255, 255, .06);
+  --a-input-border: rgba(255, 255, 255, .16);
+  --a-input-text: #f2f6f3;
+  --a-placeholder: #a9b7ad;
+  --a-icon: #d4ddd7;
+  --a-accent: #7fd61f;
+  --a-accent-2: #58b915;
+  --a-accent-text: #0b1a06;
+  --a-link: #8ee62a;
+  --a-avatar-bg: #1f8a2c;
+  --a-avatar: #e9ffe0;
+  --a-feature-bg: rgba(255, 255, 255, .06);
+  --a-feature-icon: #8ee62a;
+  --a-toggle-bg: rgba(255, 255, 255, .08);
+}
+
+.access .ico { width: 20px; height: 20px; flex: none; }
+
+.access-theme {
+  position: absolute; top: 18px; right: 18px; z-index: 2;
+  display: flex; gap: 4px; padding: 4px; border-radius: 999px;
+  background: var(--a-toggle-bg); border: 1px solid var(--a-card-border); backdrop-filter: blur(6px);
+}
+.access-theme button {
+  width: 34px; height: 34px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer;
+  background: transparent; color: var(--a-icon);
+}
+.access-theme button[aria-pressed="true"] { background: var(--a-accent); color: var(--a-accent-text); }
+.access-theme button:focus-visible { outline: 2px solid var(--a-link); outline-offset: 2px; }
+
+.access-wrap {
+  max-width: 1180px; margin: 0 auto; min-height: 100vh; padding: 56px 32px;
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center;
+}
+
+.access-hero { display: flex; flex-direction: column; gap: 10px; }
+.access-logo { width: min(440px, 100%); height: auto; display: block; margin-bottom: 26px; }
+.access-hero h1 { font-size: 46px; line-height: 1.05; font-weight: 800; color: var(--a-text); margin: 0; }
+.access-lead { font-size: 21px; color: var(--a-text); margin: 0 0 18px; font-weight: 500; }
+.access-features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.access-features li { display: flex; align-items: center; gap: 14px; font-size: 16px; color: var(--a-muted); line-height: 1.25; }
+.access-fi {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: var(--a-feature-bg); border: 1px solid var(--a-card-border); color: var(--a-feature-icon);
+}
+.access-fi .ico { width: 22px; height: 22px; }
+
+.access-card {
+  background: var(--a-card); border: 1px solid var(--a-card-border); border-radius: 22px; box-shadow: var(--a-card-shadow);
+  padding: 34px 34px 26px; display: flex; flex-direction: column; gap: 12px; max-width: 440px; width: 100%; justify-self: end;
+  backdrop-filter: blur(10px);
+}
+.access-avatar {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 2px; display: grid; place-items: center;
+  background: var(--a-avatar-bg); color: var(--a-avatar);
+}
+.access-avatar .ico { width: 32px; height: 32px; }
+.access-card h2 { text-align: center; font-size: 26px; font-weight: 800; color: var(--a-text); margin: 0; }
+.access-sub { text-align: center; color: var(--a-muted); margin: 0 0 6px; }
+
+.access-form { display: flex; flex-direction: column; gap: 12px; }
+.access-field {
+  display: flex; align-items: center; gap: 10px; padding: 0 12px; height: 48px; border-radius: 12px;
+  background: var(--a-input-bg); border: 1px solid var(--a-input-border); color: var(--a-icon); cursor: text;
+}
+.access-field:focus-within { border-color: var(--a-link); box-shadow: 0 0 0 3px color-mix(in srgb, var(--a-link) 22%, transparent); }
+.access-field input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--a-input-text); font: inherit; font-size: 15px; height: 100%;
+}
+.access-field input::placeholder { color: var(--a-placeholder); }
+.access-field input:-webkit-autofill { -webkit-text-fill-color: var(--a-input-text); transition: background-color 9999s; }
+.access-eye { border: 0; background: transparent; color: var(--a-icon); cursor: pointer; padding: 6px; border-radius: 8px; display: grid; place-items: center; }
+.access-eye:focus-visible { outline: 2px solid var(--a-link); }
+
+.access-submit {
+  height: 50px; border: 0; border-radius: 12px; cursor: pointer; margin-top: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 10px; font: inherit; font-size: 17px; font-weight: 700;
+  color: var(--a-accent-text); background: linear-gradient(180deg, var(--a-accent) 0%, var(--a-accent-2) 100%);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--a-accent) 35%, transparent);
+}
+.access-submit:hover:not(:disabled) { filter: brightness(1.05); }
+.access-submit:disabled { opacity: .65; cursor: progress; }
+.access-submit:focus-visible { outline: 3px solid var(--a-link); outline-offset: 2px; }
+
+.access-hint { text-align: center; font-size: 13px; color: var(--a-muted); margin: 2px 0 0; }
+.access-divider { height: 1px; background: var(--a-card-border); margin: 4px 0; }
+.access-foot { text-align: center; font-size: 14px; color: var(--a-muted); margin: 0; }
+.access a, .access-link { color: var(--a-link); font-weight: 600; text-decoration: none; }
+.access a:hover, .access-link:hover { text-decoration: underline; }
+.access-link { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+
+.access-alert { border-radius: 10px; padding: 10px 12px; font-size: 13.5px; line-height: 1.4; }
+.access-alert.danger { background: #fde8e8; color: #8f1d1d; border: 1px solid #f5b5b5; }
+.access-alert.warning { background: #fff4dc; color: #7a4b00; border: 1px solid #f3d38b; }
+.access-alert.info { background: #e6f0ff; color: #12366f; border: 1px solid #b8d0f7; }
+.access[data-theme="dark"] .access-alert.danger { background: rgba(220, 60, 60, .16); color: #ffc9c9; border-color: rgba(255, 120, 120, .35); }
+.access[data-theme="dark"] .access-alert.warning { background: rgba(240, 170, 40, .14); color: #ffe2a6; border-color: rgba(240, 170, 40, .35); }
+.access[data-theme="dark"] .access-alert.info { background: rgba(80, 150, 255, .14); color: #cfe0ff; border-color: rgba(80, 150, 255, .35); }
+
+@media (max-width: 860px) {
+  .access-wrap { grid-template-columns: 1fr; gap: 18px; padding: 70px 16px 28px; align-content: start; }
+  .access-hero { align-items: center; text-align: center; gap: 4px; }
+  .access-logo { width: min(300px, 82vw); margin: 0 auto 14px; }
+  .access-hero h1 { font-size: 32px; }
+  .access-lead { font-size: 16px; margin-bottom: 0; }
+  .access-features { display: none; }
+  .access-card { justify-self: center; padding: 24px 18px 20px; border-radius: 18px; }
+  .access-avatar { display: none; }
+  .access-card h2 { font-size: 22px; }
+}
