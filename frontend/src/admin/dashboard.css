@@ -1,0 +1,197 @@
+/* ================================================================ DASHBOARD
+   Composición de Bocetos/recortes/admin-desktop-*.png y admin-mobile-*.png */
+.pp-admin .only-mobile { display: none; }
+.pp-admin .dash { display: flex; flex-direction: column; gap: 18px; }
+.pp-admin .dash-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pp-admin .dash-title h1 { font-size: 30px; font-weight: 800; letter-spacing: -.015em; }
+.pp-admin .dash-title .sub { color: var(--text-2); font-size: 15px; margin-top: 2px; }
+.pp-admin .dash-filters { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.pp-admin .date-field { gap: 4px; }
+.pp-admin .date-field > label { font-size: 13px; color: var(--ink); font-weight: 600; }
+.pp-admin .date-box { position: relative; }
+.pp-admin .date-box .input { width: 168px; padding-right: 36px; font-weight: 600; background: var(--surface); }
+.pp-admin .date-box .ico { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-2); pointer-events: none; }
+.pp-admin .date-box input::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; right: 6px; width: 28px; height: 28px; cursor: pointer; }
+.pp-admin .dash-filters .btn-primary { min-height: 40px; padding: 0 16px; }
+
+/* indicadores */
+.pp-admin .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.pp-admin .kpi {
+  position: relative; display: flex; align-items: flex-start; gap: 16px; padding: 20px 18px 18px; border-radius: 16px; min-height: 118px; overflow: hidden;
+  background: var(--k-bg); border: 1px solid color-mix(in srgb, var(--k-ic) 14%, transparent); box-shadow: var(--shadow-sm);
+}
+.pp-admin .kpi-blue { --k-bg: var(--k-blue-bg); --k-tile: var(--k-blue-tile); --k-ic: var(--k-blue-ic); }
+.pp-admin .kpi-green { --k-bg: var(--k-green-bg); --k-tile: var(--k-green-tile); --k-ic: var(--k-green-ic); }
+.pp-admin .kpi-purple { --k-bg: var(--k-purple-bg); --k-tile: var(--k-purple-tile); --k-ic: var(--k-purple-ic); }
+.pp-admin .kpi-orange { --k-bg: var(--k-orange-bg); --k-tile: var(--k-orange-tile); --k-ic: var(--k-orange-ic); }
+.pp-admin[data-theme="dark"] .kpi { border-color: rgba(255, 255, 255, .07); }
+.pp-admin[data-theme="dark"] .kpi-blue { background: linear-gradient(135deg, #0d3f93 0%, #0b2c64 100%); }
+.pp-admin[data-theme="dark"] .kpi-green { background: linear-gradient(135deg, #0d3f3e 0%, #0b2b30 100%); }
+.pp-admin[data-theme="dark"] .kpi-purple { background: linear-gradient(135deg, #272657 0%, #1b1d42 100%); }
+.pp-admin[data-theme="dark"] .kpi-orange { background: linear-gradient(135deg, #3b281f 0%, #2a1f1d 100%); }
+.pp-admin .kpi-ic { width: 60px; height: 60px; border-radius: 14px; background: var(--k-tile); color: var(--k-ic); display: grid; place-items: center; flex: none; }
+.pp-admin .kpi-ic .ico { width: 30px; height: 30px; }
+.pp-admin .kpi-txt { min-width: 0; position: relative; z-index: 1; }
+.pp-admin .kpi-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.pp-admin .kpi-value { font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1.2; margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pp-admin .kpi-sub { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--text-2); margin-top: 4px; font-weight: 600; }
+.pp-admin .kpi-sub.blue { color: var(--blue); }
+.pp-admin .kpi-sub.danger { color: #e0242f; }
+.pp-admin[data-theme="dark"] .kpi-sub.danger { color: #ff7a45; }
+.pp-admin .kpi-sub.ok { color: var(--green-700); }
+.pp-admin[data-theme="dark"] .kpi-sub.blue { color: #dbe8ff; }
+.pp-admin .kpi-delta { display: inline-flex; align-items: center; gap: 2px; font-weight: 700; }
+.pp-admin .kpi-delta .ico { width: 14px; height: 14px; }
+.pp-admin .kpi-delta.up { color: #16a34a; }
+.pp-admin .kpi-delta.down { color: #e0242f; }
+.pp-admin[data-theme="dark"] .kpi-delta.up { color: #4ade80; }
+.pp-admin .kpi-spark { position: absolute; right: 12px; bottom: 12px; opacity: .95; }
+
+/* filas del tablero */
+.pp-admin .dash-row { display: grid; gap: 18px; align-items: stretch; }
+.pp-admin .dash-row-a { grid-template-columns: minmax(0, 1.62fr) minmax(0, 1.05fr) minmax(0, .95fr); }
+.pp-admin .dash-row-b { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr); }
+.pp-admin .dash-row-c { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pp-admin .dash .card-head h2 { font-size: 17px; font-weight: 800; }
+.pp-admin .see-all { display: inline-flex; align-items: center; gap: 4px; font-weight: 650; font-size: 13.5px; color: var(--blue); white-space: nowrap; }
+.pp-admin .see-all .ico { width: 15px; height: 15px; }
+.pp-admin .mini-select { position: relative; display: inline-flex; align-items: center; }
+.pp-admin .mini-select select {
+  appearance: none; -webkit-appearance: none; height: 34px; padding: 0 32px 0 12px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--ink); font: inherit; font-weight: 650; cursor: pointer;
+}
+.pp-admin .mini-select .ico { position: absolute; right: 9px; width: 16px; height: 16px; pointer-events: none; color: var(--text-2); }
+
+/* gráfico de línea */
+.pp-admin .lc { width: 100%; }
+.pp-admin .lc svg { display: block; }
+.pp-admin .lc-grid { stroke: var(--chart-grid); stroke-width: 1; }
+.pp-admin .lc-axis { font-size: 11.5px; fill: var(--text-2); font-family: var(--font); font-weight: 500; }
+.pp-admin .lc-line { fill: none; stroke: var(--chart-line); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.pp-admin .lc-dot { fill: var(--chart-line); stroke: var(--surface); stroke-width: 2; }
+.pp-admin .lc-guide { stroke: var(--chart-line); stroke-dasharray: 3 4; opacity: .5; }
+.pp-admin .lc-tip rect, .pp-admin .lc-tip path { fill: #0b3a91; }
+.pp-admin .lc-tip text { fill: #fff; font-size: 12px; font-weight: 700; font-family: var(--font); }
+.pp-admin[data-theme="dark"] .lc-tip rect, .pp-admin[data-theme="dark"] .lc-tip path { fill: #c7d2fe; }
+.pp-admin[data-theme="dark"] .lc-tip text { fill: #1e1b4b; }
+.pp-admin .chart-note { margin-top: 4px; text-align: center; }
+.pp-admin .chart-card .card-body { padding-top: 4px; }
+
+/* métodos de pago */
+.pp-admin .pay-wrap { display: flex; align-items: center; justify-content: space-around; gap: 16px; flex-wrap: wrap; min-height: 190px; }
+.pp-admin .pay-note { flex-basis: 100%; text-align: center; margin-top: -4px; }
+.pp-admin .donut { position: relative; flex: none; width: var(--donut-size, 158px); height: var(--donut-size, 158px); }
+.pp-admin .donut svg { display: block; }
+.pp-admin .donut-track { stroke: var(--surface-2); }
+.pp-admin .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.pp-admin .donut-center strong { font-size: 19px; font-weight: 800; color: var(--ink); line-height: 1.15; }
+.pp-admin .donut-center span { font-size: 12.5px; color: var(--text-2); font-weight: 600; }
+.pp-admin .pay-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; min-width: 120px; flex: 1 1 120px; max-width: 190px; }
+.pp-admin .pay-legend li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--ink); font-weight: 550; }
+.pp-admin .pay-legend .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+.pp-admin .pay-legend strong { font-weight: 700; }
+
+/* alertas */
+.pp-admin .alert-list { list-style: none; margin: 0; padding: 4px 0 0; display: flex; flex-direction: column; gap: 18px; }
+.pp-admin .alert-list li { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--ink); font-weight: 550; line-height: 1.35; }
+.pp-admin .al-ic { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; flex: none; color: #fff; }
+.pp-admin .al-ic .ico { width: 17px; height: 17px; }
+.pp-admin .al-ic.red { background: transparent; color: #e0242f; }
+.pp-admin .al-ic.red .ico { width: 28px; height: 28px; fill: #e0242f; stroke: #fff; stroke-width: 1.6; }
+.pp-admin .al-ic.orange { background: #f97316; }
+.pp-admin .al-ic.blue { background: #1f6fee; }
+.pp-admin[data-theme="dark"] .al-ic.red .ico { stroke: #0c1e34; }
+
+/* más vendidos */
+.pp-admin .top-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pp-admin .top-list li { display: flex; align-items: center; gap: 14px; padding: 10px 2px; border-top: 1px solid var(--border); }
+.pp-admin .top-list li:first-child { border-top: 0; }
+.pp-admin .top-list .rank { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--ink); background: var(--surface-2); flex: none; }
+.pp-admin .top-list .pic { width: 44px; height: 30px; border-radius: 6px; display: grid; place-items: center; background: var(--navy-50); color: var(--blue); flex: none; }
+.pp-admin .top-list .pic .ico { width: 18px; height: 18px; }
+.pp-admin .top-list .nm { display: block; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pp-admin .top-list .qty-l { white-space: nowrap; color: var(--ink); font-weight: 650; }
+.pp-admin .link-strong { color: var(--blue); font-weight: 600; white-space: nowrap; }
+
+/* actividad */
+.pp-admin .activity { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pp-admin .activity li { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid var(--border); }
+.pp-admin .activity li:first-child { border-top: 0; }
+.pp-admin .activity .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+.pp-admin .activity .dot.green { background: #22c55e; }
+.pp-admin .activity .dot.orange { background: #f59e0b; }
+.pp-admin .activity .dot.blue { background: #3b5bfd; }
+.pp-admin .activity .nm { display: block; font-weight: 600; color: var(--ink); font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+@media (max-width: 1400px) {
+  .pp-admin .kpi-value { font-size: 23px; }
+  .pp-admin .kpi-ic { width: 52px; height: 52px; }
+}
+@media (max-width: 1280px) {
+  .pp-admin .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-admin .dash-row-a { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-admin .dash-row-a > .chart-card { grid-column: 1 / -1; }
+  .pp-admin .dash-row-b { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-admin .dash-row-b > :nth-child(2) { grid-column: 1 / -1; order: -1; }
+}
+@media (max-width: 900px) {
+  .pp-admin .dash-row-a, .pp-admin .dash-row-b, .pp-admin .dash-row-c { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .pp-admin .only-desktop { display: none; }
+  .pp-admin .only-mobile { display: inline; }
+  .pp-admin .dash { gap: 14px; }
+  .pp-admin .dash-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 10px; }
+  .pp-admin .dash-title h1 { font-size: 26px; }
+  .pp-admin .dash-preset { display: inline-flex; position: relative; align-items: center; }
+  .pp-admin .dash-preset select { appearance: none; -webkit-appearance: none; padding-right: 32px; min-height: 36px; font-weight: 650; border-radius: 10px; background: var(--surface); }
+  .pp-admin .dash-preset .ico { position: absolute; right: 9px; width: 16px; height: 16px; pointer-events: none; color: var(--text-2); }
+  .pp-admin .dash-filters { display: none; grid-column: 1 / -1; }
+  .pp-admin .dash-filters.open { display: grid; grid-template-columns: 1fr 1fr; }
+  .pp-admin .dash-filters.open .btn { grid-column: 1 / -1; }
+  .pp-admin .date-box .input { width: 100%; }
+  .pp-admin .kpis { gap: 10px; }
+  .pp-admin .kpi { padding: 12px; gap: 10px; min-height: 0; border-radius: 14px; align-items: center; }
+  .pp-admin .kpi-ic { width: 42px; height: 42px; border-radius: 11px; }
+  .pp-admin .kpi-ic .ico { width: 22px; height: 22px; }
+  .pp-admin .kpi-label { font-size: 12px; }
+  .pp-admin .kpi-value { font-size: 17px; }
+  .pp-admin .kpi-sub, .pp-admin .kpi-spark { display: none; }
+  .pp-admin .dash .card-head { padding: 12px 14px 4px; }
+  .pp-admin .dash .card-body { padding: 10px 14px 14px; }
+  .pp-admin .dash .card-head h2 { font-size: 15.5px; }
+  .pp-admin .pay-wrap { min-height: 0; justify-content: space-between; flex-wrap: nowrap; }
+  .pp-admin .pay-wrap .donut { transform: scale(.78); transform-origin: left center; margin-right: -36px; }
+  .pp-admin .pay-legend { gap: 8px; min-width: 0; }
+  .pp-admin .pay-legend li { font-size: 13px; }
+}
+
+/* ajustes de fidelidad */
+.pp-admin .dash .card-head { flex-wrap: nowrap; }
+.pp-admin .dash .card-head h2 { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pp-admin .dash .table td, .pp-admin .dash .table th { white-space: nowrap; padding: 9px 12px; }
+.pp-admin .ellip { display: inline-block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+.pp-admin .kpi-value { font-weight: 750; }
+.pp-admin .kpi-ic .ico { stroke-width: 2.3; }
+.pp-admin .kpi-spark { right: 10px; bottom: 10px; z-index: 0; }
+@media (max-width: 1500px) and (min-width: 761px) {
+  .pp-admin .pay-wrap { --donut-size: 136px; gap: 12px; }
+}
+@media (max-width: 760px) {
+  .pp-admin .pay-wrap { --donut-size: 112px; flex-wrap: nowrap; gap: 14px; }
+  .pp-admin .pay-wrap .donut { transform: none; margin: 0; }
+  .pp-admin .donut-center strong { font-size: 14px; }
+  .pp-admin .donut-center span { font-size: 11px; }
+  .pp-admin .pay-note { display: none; }
+}
+
+/* ajustes finos (comparación con los recortes) */
+.pp-admin .dash-row-a { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.05fr) minmax(0, 1.05fr); }
+.pp-admin .dash .card-head h2 { font-size: 16.5px; }
+.pp-admin .dash .table td, .pp-admin .dash .table th { padding: 9px 8px; }
+.pp-admin .dash .table td:first-child, .pp-admin .dash .table th:first-child { padding-left: 12px; }
+.pp-admin .dash .ellip { max-width: 118px; }
+.pp-admin .kpi { gap: 14px; }
+.pp-admin .kpi-ic { width: 54px; height: 54px; }
+.pp-admin .kpi-ic .ico { width: 28px; height: 28px; }
+.pp-admin .kpi-spark { right: 8px; bottom: 8px; }

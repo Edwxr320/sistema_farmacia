@@ -6,6 +6,7 @@ import { filterNav } from '../core/permissions.js';
 import { destinationFor, safeNext, isAdminPath, internalPath } from '../core/redirect.js';
 import { NAV } from '../admin/nav.js';
 import { Icon } from '../components/icons.jsx';
+import { Waves, WavesMobile, Shelves, Bottle, Leaves, UserAvatarIcon, ShieldCheckIcon } from './AccessArt.jsx';
 import './access.css';
 
 const THEME_KEY = 'pp.theme';
@@ -98,26 +99,38 @@ export default function AccessPage() {
 
   return (
     <div className="access" data-theme={theme}>
-      <div className="access-theme" role="group" aria-label="Tema de color">
-        <button type="button" aria-pressed={String(theme === 'light')} aria-label="Tema claro" title="Tema claro" onClick={() => setTheme('light')}><Icon name="sun" /></button>
-        <button type="button" aria-pressed={String(theme === 'dark')} aria-label="Tema oscuro" title="Tema oscuro" onClick={() => setTheme('dark')}><Icon name="moon" /></button>
+      {/* Decoración ilustrada (SVG propio, solo visual). */}
+      <div className="access-art" aria-hidden="true">
+        <Waves className="art-waves" />
+        <WavesMobile className="art-waves-m" />
+        <Shelves className="art-shelves" />
+        <Bottle className="art-bottle" />
+        <Leaves className="art-leaves-br" variant="br" />
+        <Leaves className="art-leaves-tr" variant="tr" />
+        <Leaves className="art-leaves-bl" variant="bl" />
       </div>
 
       <main className="access-wrap">
         <section className="access-hero">
-          <Link to="/" aria-label="Pharma Plus, ir a la tienda"><img className="access-logo" src={logo} alt="Pharma Plus — Tu salud, nuestra prioridad" /></Link>
-          <h1>Bienvenido</h1>
-          <p className="access-lead">Inicia sesión en tu cuenta</p>
-          <ul className="access-features">
-            <li><span className="access-fi"><Icon name="shield" /></span>Compra segura<br />y confiable</li>
-            <li><span className="access-fi"><Icon name="truck" /></span>Recojo en tienda y delivery</li>
-            <li><span className="access-fi"><Icon name="headset" /></span>Atención personalizada</li>
-          </ul>
+          <Link to="/" className="access-brand" aria-label="Pharma Plus, ir a la tienda"><img className="access-logo" src={logo} alt="Pharma Plus — Tu salud, nuestra prioridad" /></Link>
+          <div className="access-theme" role="group" aria-label="Tema de color">
+            <button type="button" aria-pressed={String(theme === 'light')} aria-label="Tema claro" title="Tema claro" onClick={() => setTheme('light')}><Icon name="sun" /></button>
+            <button type="button" aria-pressed={String(theme === 'dark')} aria-label="Tema oscuro" title="Tema oscuro" onClick={() => setTheme('dark')}><Icon name="moon" /></button>
+          </div>
+          <div className="access-welcome">
+            <h1>Bienvenido</h1>
+            <p className="access-lead">Inicia sesión en tu cuenta</p>
+            <ul className="access-features">
+              <li><span className="access-fi fi-green"><ShieldCheckIcon /></span><span>Compra segura<br />y confiable</span></li>
+              <li><span className="access-fi fi-blue"><Icon name="truck" /></span><span>Recojo en tienda y delivery</span></li>
+              <li><span className="access-fi fi-teal"><Icon name="headset" /></span><span>Atención personalizada</span></li>
+            </ul>
+          </div>
         </section>
 
         <section className="access-card" aria-labelledby={`${uid}-t`}>
-          <div className="access-avatar" aria-hidden="true"><Icon name="user" /></div>
-          <h2 id={`${uid}-t`}>Iniciar sesión</h2>
+          <div className="access-avatar" aria-hidden="true"><UserAvatarIcon /></div>
+          <h2 id={`${uid}-t`}>Iniciar Sesión</h2>
           <p className="access-sub">Accede a tu cuenta para continuar</p>
 
           {notice ? <div className="access-alert warning" role="status">{notice}</div> : null}
@@ -148,14 +161,11 @@ export default function AccessPage() {
               </button>
             </label>
             <button type="submit" className="access-submit" disabled={busy || current === undefined} aria-busy={busy ? 'true' : undefined}>
-              <Icon name="login" />{busy ? 'Ingresando…' : 'Ingresar'}
+              {busy ? <span className="access-spin" aria-hidden="true" /> : <Icon name="login" />}{busy ? 'Ingresando…' : 'Ingresar'}
             </button>
           </form>
 
-          <p className="access-hint">Clientes y personal de la botica usan este mismo acceso.</p>
-          <div className="access-divider" />
           <p className="access-foot">¿No tienes una cuenta? <Link to={registerHref}>Regístrate</Link></p>
-          <p className="access-foot"><Link to="/">Volver a la tienda</Link></p>
         </section>
       </main>
     </div>

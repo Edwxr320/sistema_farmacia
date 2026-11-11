@@ -407,8 +407,8 @@ test('frontend E2E: panel administrativo y tienda virtual', { skip: !enabled && 
       await w.waitForFunction(() => /Sesión del personal activa/.test(document.body.innerText), { timeout: 15000 });
       // Cerrar sesión desde el panel lleva al acceso único.
       await w.goto(`${BASE}/admin/`, { waitUntil: 'networkidle0' });
-      await w.waitForSelector('.topbar button[title="Cerrar sesión"]');
-      await w.click('.topbar button[title="Cerrar sesión"]');
+      await w.waitForSelector('.sidebar button[title="Cerrar sesión"]');
+      await w.click('.sidebar button[title="Cerrar sesión"]');
       await w.waitForFunction(() => location.pathname === '/acceso', { timeout: 15000 });
       assert.deepEqual(w.problems, [], w.problems.join('\n'));
     });

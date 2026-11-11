@@ -46,6 +46,16 @@ export const ICONS = {
   moon: 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z',
   login: 'M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3',
   headset: 'M3 18v-6a9 9 0 0 1 18 0v6M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z',
+  chevronDown: 'M6 9l6 6 6-6',
+  home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+  dots: 'M5 12h.01M12 12h.01M19 12h.01',
+  arrowRight: 'M5 12h14M13 6l6 6-6 6',
+  arrowUp: 'M12 19V5M6 11l6-6 6 6',
+  arrowDown: 'M12 5v14M6 13l6 6 6-6',
+  calendar: 'M4 5h16v16H4zM16 3v4M8 3v4M4 10h16',
+  info: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',
+  alertCircle: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01',
+  wifi: 'M5 12.6a10 10 0 0 1 14 0M8.5 16.1a5 5 0 0 1 7 0M12 20h.01M1.4 9a16 16 0 0 1 21.2 0',
   barcode: 'M3 5v14M7 5v14M11 5v14M15 5v14M18 5v14M21 5v14',
 };
 
