@@ -228,15 +228,6 @@ El menú y los botones se muestran según los permisos efectivos del usuario, y 
 
 </details>
 
-<details>
-<summary><b>Panel en móvil</b></summary>
-
-| Dashboard (claro) | Productos (claro) | Dashboard (oscuro) | Productos (oscuro) |
-|---|---|---|---|
-| ![Dashboard móvil claro](evidencias/admin/admin-mobile-claro.png) | ![Productos móvil claro](evidencias/admin/admin-mobile-productos-claro.png) | ![Dashboard móvil oscuro](evidencias/admin/admin-mobile-oscuro.png) | ![Productos móvil oscuro](evidencias/admin/admin-mobile-productos-oscuro.png) |
-
-</details>
-
 ### Acceso y registro
 
 | Tema claro | Tema oscuro |
