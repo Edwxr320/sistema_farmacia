@@ -314,3 +314,56 @@
   .access-welcome { margin-top: 22px; }
   .access-card { padding-top: 26px; }
 }
+
+/* =============================================================================
+   Registro (/registro): misma pantalla que el acceso (AccessLayout); solo cambia la tarjeta.
+   Todo va bajo .access-register para no alterar el login.
+   ============================================================================= */
+/* El formulario es más alto que la pantalla en algunos equipos: el fondo se queda fijo y la página se desplaza. */
+.access-register { overflow: visible; }
+.access-register .access-art { position: fixed; }
+.access-register .access-card {
+  min-height: 0; justify-content: flex-start; gap: 8px;
+  padding: clamp(20px, 3vh, 34px) clamp(26px, 2.4vw, 36px) clamp(18px, 2.6vh, 28px);
+}
+.access-register .access-avatar { width: 58px; height: 58px; }
+.access-register .access-avatar .access-avatar-ic { width: 30px; height: 30px; color: var(--a-avatar); }
+.access-register .access-card h2 { margin-top: 0; }
+.access-register .access-sub { margin: -4px 0 clamp(6px, 1.2vh, 12px); font-size: 15px; line-height: 1.4; }
+.access-register .access-form { gap: 0; }
+.access-register .access-field { height: 50px; }
+.access-group { display: flex; flex-direction: column; }
+.access-msg { min-height: 10px; padding: 3px 6px 2px; font-size: 12.5px; line-height: 1.35; color: var(--a-muted); }
+.access-msg:empty { min-height: 10px; padding: 0; }
+.access-group.has-error .access-field { border-color: #d93636; }
+.access-group.has-error .access-field:focus-within { box-shadow: 0 0 0 4px rgba(217, 54, 54, .16); }
+.access-group.has-error .access-msg { color: #c62828; font-weight: 600; }
+.access[data-theme="dark"] .access-group.has-error .access-msg { color: #ff9b94; }
+.access-doc { border: 0; margin: 0 0 10px; padding: 0 4px; min-width: 0; }
+.access-doc legend { padding: 0; margin-bottom: 6px; font-size: 15px; font-weight: 600; color: var(--a-muted); }
+.access-radios { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.access-radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; color: var(--a-text); font-weight: 500; }
+.access-radio input { width: 18px; height: 18px; margin: 0; accent-color: var(--a-link); cursor: pointer; }
+.access-radio input:focus-visible { outline: 2px solid var(--a-link); outline-offset: 2px; }
+.access-register .access-submit { margin-top: 6px; height: 54px; }
+.access-register .access-foot { margin-top: 6px; }
+
+@media (max-width: 820px) {
+  /* Móvil: logo → tema → «Crear cuenta» → subtítulo → formulario (el saludo del login no aplica aquí). */
+  .access-register .access-wrap { align-content: start; }
+  .access-register .access-welcome { display: none; }
+  .access-register .access-card { padding: 18px 0 0; gap: 8px; }
+  .access-register .access-avatar { display: none; }
+  .access-register .access-card h2, .access-register .access-sub { display: block; }
+  .access-register .access-card h2 { font-size: clamp(28px, 8vw, 34px); margin: 0; }
+  .access-register .access-sub { margin: 0 0 10px; font-size: 15px; }
+  .access-register .access-field { height: 56px; border-radius: 15px; }
+  .access-register .access-submit { height: 56px; }
+  .access-radios { gap: 6px 14px; }
+  .access-radio { font-size: 14.5px; }
+}
+@media (max-width: 360px) {
+  .access-register .access-field { height: 52px; }
+  .access-radios { gap: 6px 12px; }
+  .access-radio { font-size: 13.5px; }
+}

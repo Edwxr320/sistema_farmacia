@@ -1,35 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useStore, useStoreEvent } from './context.jsx';
 import {
   Button, Icon, toast, Spinner, EmptyState, ErrorState, Card, KV, AlertBox, Badge, ToneBadge, Pagination, Select, confirmDialog, useAsync, Async, useDebouncedCallback,
 } from '../components/ui.jsx';
 import { Form, formModal } from '../components/form.jsx';
 import { money, dateTime, date, idempotencyKey, PAYMENT_METHODS, FULFILLMENT, errorMessage, cents, fromCents } from '../core/format.js';
-import { accessUrl, destinationFor } from '../core/redirect.js';
+import { HeroArt } from './StoreArt.jsx';
+import { ProductImage, hasProductImage } from '../components/ProductImage.jsx';
+import { ShieldCheckIcon } from '../access/AccessArt.jsx';
 
 export const TITLES = {
   Home: '', Catalog: 'Catálogo', Product: 'Producto', Cart: 'Carrito', Checkout: 'Finalizar compra', Orders: 'Mis pedidos',
-  Order: 'Pedido', Account: 'Mi cuenta', Register: 'Crear cuenta',
+  Order: 'Pedido', Account: 'Mi cuenta',
 };
-const LOGO = '/img/Logo-pharma-plus.jpeg';
 const STORE_METHODS = ['CASH', 'YAPE', 'PLIN', 'CARD', 'TRANSFER'];
 
 // ------------------------------------------------------------ componentes
 function ProductCard({ p }) {
   const ctx = useStore();
+  const sub = [p.presentation, p.laboratory].filter(Boolean).join(' · ');
   return (
-    <article className="product-card">
-      <Link to={`/producto/${p.id}`} className="img" aria-label={p.name}>{p.imageUrl ? <img src={p.imageUrl} alt="" loading="lazy" /> : <Icon name="pill" />}</Link>
+    <article className="product-card st-pcard">
+      <Link to={`/producto/${p.id}`} className={`img${hasProductImage(p) ? ' has-photo' : ''}`} aria-label={p.name}><ProductImage key={p.id} product={p} /></Link>
       <div className="body">
-        <div className="small muted">{p.category.name}</div>
+        <div className="st-pcat">{p.category.name}</div>
         <Link to={`/producto/${p.id}`} className="name">{p.name}</Link>
-        <div className="small muted">{[p.presentation, p.laboratory].filter(Boolean).join(' · ')}</div>
-        <div className="row" style={{ gap: '6px' }}>
+        {sub ? <div className="st-psub">{sub}</div> : null}
+        <div className="st-ptags">
           {p.requiresPrescription ? <ToneBadge tone="info">Requiere receta</ToneBadge> : null}
-          {!p.inStock ? <ToneBadge tone="neutral">Sin stock</ToneBadge> : null}
+          {p.inStock ? <ToneBadge tone="success">Disponible</ToneBadge> : <ToneBadge tone="neutral">Sin stock</ToneBadge>}
         </div>
-        <div className="row between" style={{ marginTop: 'auto' }}>
+        <div className="st-pfoot">
           <span className="price">{money(p.price)}</span>
           <Button variant={p.inStock ? 'primary' : ''} size="sm" icon={p.inStock ? 'cart' : undefined} disabled={!p.inStock} onClick={() => ctx.addToCart(p, 1)}>{p.inStock ? 'Agregar' : 'Agotado'}</Button>
         </div>
@@ -44,8 +46,12 @@ function ProductsGrid({ list, empty = 'No encontramos productos' }) {
     : <EmptyState title={empty} text="Pruebe con otra búsqueda o categoría." />;
 }
 
-function SectionHead({ title, link }) {
-  return <div className="section-head"><h2>{title}</h2>{link || null}</div>;
+function SectionHead({ title, link, icon }) {
+  return <div className="section-head">{icon ? <h2 className="st-sec-title"><Icon name={icon} />{title}</h2> : <h2>{title}</h2>}{link || null}</div>;
+}
+
+function SeeAll({ to }) {
+  return <Link to={to} className="st-seeall">Ver todos<Icon name="arrowRight" /></Link>;
 }
 
 // ------------------------------------------------------------------ inicio
@@ -56,51 +62,48 @@ export function Home() {
   const state = useAsync(async () => {
     const [cats, featured] = await Promise.all([
       ctx.api.get('/store/categories', { branchId: ctx.branchId }),
-      ctx.api.get('/store/products', { branchId: ctx.branchId, inStock: 'true', pageSize: 8 }),
+      ctx.api.get('/store/products', { branchId: ctx.branchId, inStock: 'true', pageSize: 10 }),
     ]);
     return { cats: cats.data, featured: featured.data };
   }, []);
-  const deliveryText = s.deliveryFee === undefined || s.deliveryFee === null ? 'Consulte disponibilidad de delivery en su zona.'
-    : `${Number(s.deliveryFee) === 0 ? 'Envío sin costo' : `Costo de envío: ${money(s.deliveryFee)}`}.${Array.isArray(s.deliveryDistricts) && s.deliveryDistricts.length ? ` Cobertura: ${s.deliveryDistricts.join(', ')}.` : ''}`;
+  const deliverySub = s.deliveryFee === undefined || s.deliveryFee === null ? 'En distritos con cobertura'
+    : `${Number(s.deliveryFee) === 0 ? 'Envío sin costo' : `Envío ${money(s.deliveryFee)}`} · distritos con cobertura`;
   return (
-    <Async state={state}>
-      {({ cats, featured }) => (
-        <>
-          <section className="hero">
-            <div>
-              <h1>Tu salud, nuestra prioridad</h1>
-              <p>Medicamentos, cuidado personal y bienestar con precios claros. Reserve en línea y recoja en tienda o reciba en casa.</p>
-              <form className="search" role="search" onSubmit={(e) => { e.preventDefault(); ctx.navigate('catalogo', { q: e.currentTarget.elements.q.value.trim() || undefined }); }}>
-                <Icon name="search" />
-                <input name="q" className="input" type="search" placeholder="¿Qué está buscando? Ej.: paracetamol, vitamina C…" aria-label="Buscar productos" />
-              </form>
-              <div className="row" style={{ marginTop: '14px' }}>
-                <Link to="/catalogo" className="btn btn-primary btn-lg">Ver catálogo</Link>
-                {ctx.user ? <Link to="/pedidos" className="btn btn-lg">Mis pedidos</Link> : <Link to="/registro" className="btn btn-lg">Crear cuenta</Link>}
-              </div>
-            </div>
-            <div className="hero-side">
-              <div className="hero-tile"><Icon name="store" /><div><strong>Recojo en tienda</strong><p className="small muted">{branch ? `${branch.name}${branch.address ? ` — ${branch.address}` : ''}` : 'Elija su sucursal.'}</p></div></div>
-              <div className="hero-tile"><Icon name="truck" /><div><strong>Delivery</strong><p className="small muted">{deliveryText}</p></div></div>
-              <div className="hero-tile"><Icon name="shield" /><div><strong>Medicamentos con receta</strong><p className="small muted">Indique el número de receta al comprar; se verifica al entregar.</p></div></div>
-              <div className="hero-tile"><Icon name="check" /><div><strong>Pagos de demostración</strong><p className="small muted">Este sitio no procesa cobros reales ni guarda datos de tarjetas.</p></div></div>
-            </div>
-          </section>
-          {cats.length ? (
+    <>
+      <section className="st-hero-row hero" aria-label="Pharma Plus">
+        <div className="st-banner">
+          <div className="st-banner-text">
+            <h1>Cuida tu salud<br />con <span className="st-green">Pharma Plus</span></h1>
+            <p>Medicamentos de calidad, siempre contigo</p>
+            <Link to="/catalogo" className="st-btn-green">Ver productos<Icon name="arrowRight" /></Link>
+          </div>
+          <HeroArt theme={ctx.theme} className="st-banner-art" />
+        </div>
+        <ul className="st-benefits" aria-label="Beneficios">
+          <li><span className="st-bic st-bic-green"><ShieldCheckIcon /></span><div><strong>Compra segura</strong><span>Tus datos protegidos</span></div></li>
+          <li><span className="st-bic st-bic-blue"><Icon name="truck" /></span><div><strong>Recojo en tienda y delivery</strong><span title={branch ? `Recojo en ${branch.name}` : undefined}>{deliverySub}</span></div></li>
+          <li><span className="st-bic st-bic-blue"><Icon name="headset" /></span><div><strong>Atención personalizada</strong><span>Siempre contigo</span></div></li>
+        </ul>
+      </section>
+      <Async state={state}>
+        {({ cats, featured }) => (
+          <>
             <section>
-              <SectionHead title="Categorías" link={<Link to="/catalogo">Ver todo</Link>} />
-              <div className="chips">
-                {cats.map((c) => <button key={c.id} className="chip" type="button" onClick={() => ctx.navigate('catalogo', { cat: c.id })}>{`${c.name} (${c.products})`}</button>)}
-              </div>
+              <SectionHead icon="star" title="Productos destacados" link={<SeeAll to="/catalogo" />} />
+              <ProductsGrid list={featured} empty={`Aún no hay productos con stock en ${branch?.name || 'esta sucursal'}`} />
             </section>
-          ) : null}
-          <section>
-            <SectionHead title={`Disponibles en ${branch?.name || 'la tienda'}`} link={<Link to="/catalogo">Ver catálogo completo</Link>} />
-            <ProductsGrid list={featured} empty="Aún no hay productos con stock en esta sucursal" />
-          </section>
-        </>
-      )}
-    </Async>
+            {cats.length ? (
+              <section>
+                <SectionHead icon="tag" title="Categorías" link={<SeeAll to="/catalogo" />} />
+                <div className="chips">
+                  {cats.map((c) => <button key={c.id} className="chip" type="button" onClick={() => ctx.navigate('catalogo', { cat: c.id })}>{`${c.name} (${c.products})`}</button>)}
+                </div>
+              </section>
+            ) : null}
+          </>
+        )}
+      </Async>
+    </>
   );
 }
 
@@ -166,7 +169,7 @@ export function Product({ params }) {
           <>
             <nav className="small" aria-label="Ruta"><Link to="/catalogo">Catálogo</Link>{' / '}<Link to={`/catalogo?cat=${p.category.id}`}>{p.category.name}</Link></nav>
             <section className="product-detail">
-              <div className="img">{p.imageUrl ? <img src={p.imageUrl} alt={p.name} style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} /> : <Icon name="pill" />}</div>
+              <div className={`img${hasProductImage(p) ? ' has-photo' : ''}`}><ProductImage key={p.id} product={p} alt={p.name} loading="eager" /></div>
               <div className="stack">
                 <div className="small muted">{`${p.category.name}${p.laboratory ? ` · ${p.laboratory}` : ''}`}</div>
                 <h1>{p.name}</h1>
@@ -311,6 +314,9 @@ function CheckoutForm({ c, initialAddresses }) {
   const attempt = useRef({ key: idempotencyKey('web'), sig: '' });
   const rxRefs = useRef({});
   const rxItems = c.items.filter((i) => i.requiresPrescription);
+  // El servidor decide si hay pagos electrónicos (PAYMENT_PROVIDER); sin proveedor, solo efectivo.
+  const electronicEnabled = s.payments?.electronicEnabled !== false;
+  const methods = electronicEnabled ? STORE_METHODS : ['CASH'];
 
   const fee = () => (fulfillment === 'DELIVERY' ? (s.deliveryFee ?? '0.00') : '0.00');
   const total = () => expectedTotal ?? fromCents(cents(c.subtotal) + cents(fee()));
@@ -405,10 +411,12 @@ function CheckoutForm({ c, initialAddresses }) {
           ) : null}
           <Card title={`${rxItems.length ? 3 : 2}. Pago`}>
             <div className="stack">
-              <AlertBox tone="info">Pagos de demostración: no se realiza ningún cobro real ni se solicitan datos de tarjeta.</AlertBox>
+              <AlertBox tone="info">{electronicEnabled
+                ? 'Pagos de demostración: no se realiza ningún cobro real ni se solicitan datos de tarjeta.'
+                : 'Por ahora solo se acepta pago en efectivo al recoger o recibir su pedido.'}</AlertBox>
               <div className="stack">
                 <div className="stack" role="radiogroup" aria-label="Método de pago">
-                  {STORE_METHODS.map((m) => (
+                  {methods.map((m) => (
                     <Choice key={m} name="method" value={m} current={method} title={PAYMENT_METHODS[m]}
                       sub={m === 'CASH' ? `Paga al ${fulfillment === 'PICKUP' ? 'recoger' : 'recibir'} su pedido` : 'Simulación de pago electrónico (DEMO, sin cobro real)'} onPick={setMethod} />
                   ))}
@@ -660,64 +668,5 @@ export function Account() {
         );
       }}
     </Async>
-  );
-}
-
-// ------------------------------------------------------- ingreso y registro
-function AuthLayout({ title, sub, children }) {
-  return (
-    <div className="card" style={{ maxWidth: '460px', width: '100%', margin: '0 auto' }}>
-      <div className="card-body stack">
-        <img src={LOGO} alt="Pharma Plus" style={{ width: '200px', margin: '0 auto' }} />
-        <h1 style={{ textAlign: 'center' }}>{title}</h1>
-        {sub ? <p className="muted small" style={{ textAlign: 'center' }}>{sub}</p> : null}
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function useRedirectIfLogged(next) {
-  const ctx = useStore();
-  const navigate = useNavigate();
-  const done = useRef(false);
-  useEffect(() => {
-    if (ctx.user && !done.current) { done.current = true; navigate(destinationFor('CUSTOMER', next), { replace: true }); }
-  }, [ctx.user]); // eslint-disable-line react-hooks/exhaustive-deps
-  return Boolean(ctx.user);
-}
-
-export function Register({ query }) {
-  const ctx = useStore();
-  const logged = useRedirectIfLogged(query.next);
-  if (logged) return <Spinner />;
-  return (
-    <AuthLayout title="Crear cuenta" sub="Compre en línea y siga sus pedidos en tiempo real.">
-      <div className="stack">
-        <Form
-          fields={[
-            { name: 'fullName', label: 'Nombre completo', required: true, full: true, autocomplete: 'name' },
-            { name: 'email', label: 'Correo electrónico', type: 'email', required: true, full: true, autocomplete: 'email' },
-            { name: 'phone', label: 'Teléfono', autocomplete: 'tel', emptyAs: undefined },
-            { name: 'documentType', label: 'Documento (opcional)', type: 'select', placeholder: 'Sin documento', emptyAs: undefined,
-              options: [{ value: 'DNI', label: 'DNI' }, { value: 'CE', label: 'Carné de extranjería' }, { value: 'PASSPORT', label: 'Pasaporte' }] },
-            { name: 'documentNumber', label: 'Número de documento', emptyAs: undefined },
-            { name: 'password', label: 'Contraseña', type: 'password', required: true, autocomplete: 'new-password', hint: 'Mínimo 10 caracteres, con mayúscula, minúscula y número.' },
-            { name: 'confirm', label: 'Repetir contraseña', type: 'password', required: true, autocomplete: 'new-password' },
-          ]}
-          submitLabel="Crear cuenta"
-          onSubmit={async (v) => {
-            if (v.password !== v.confirm) throw Object.assign(new Error('Las contraseñas no coinciden'), { details: [{ field: 'confirm', message: 'Las contraseñas no coinciden' }] });
-            const { confirm, ...body } = v;
-            void confirm;
-            await ctx.api.post('/store/auth/register', body);
-            await ctx.api.access(v.email, v.password); // acceso único: cierra cualquier otra sesión del navegador
-            toast('¡Bienvenido a Pharma Plus!', 'success');
-            await ctx.onLoggedIn();
-          }}
-        />
-        <p className="small" style={{ textAlign: 'center' }}>¿Ya tiene cuenta? <Link to={accessUrl(query.next || '')}>Ingresar</Link></p>
-      </div>
-    </AuthLayout>
   );
 }

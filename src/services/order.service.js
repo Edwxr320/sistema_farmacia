@@ -19,6 +19,7 @@ const { reserveFefoInTransaction } = require('./inventory.service');
 const { voidSaleInTransaction, restockAllocations } = require('./sale.service');
 const { assertBranchAccess, assertBranchAccessInTx, visibleBranchIds, resolveBranch } = require('./branch-access.service');
 const { emitToBranch, emitToUser, emitInventoryChanged } = require('./realtime.service');
+const paymentGateway = require('./payment-gateway.service');
 
 const DEMO_REJECTION = 'DEMO: operación rechazada por el emisor simulado';
 
@@ -122,6 +123,7 @@ async function assertCoverage(conn, branch, address) {
  * - Idempotency-Key: un reintento devuelve el mismo pedido (bloqueo con nombre hasta el COMMIT).
  */
 async function checkout(data, auth, ctx, { idempotencyKey } = {}) {
+  paymentGateway.assertMethodsAvailable([data.paymentMethod]);
   const lock = idempotencyKey
     ? { name: `pp_order_${crypto.createHash('sha1').update(`${auth.userId}:${idempotencyKey}`).digest('hex')}`.slice(0, 64), timeoutSeconds: 15 }
     : null;

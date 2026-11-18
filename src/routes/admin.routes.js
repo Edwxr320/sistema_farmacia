@@ -10,6 +10,7 @@ const { emailField, fullNameField, strongPassword } = require('../validators/aut
 const admin = require('../services/admin.service');
 const adminRepository = require('../repositories/admin.repository');
 const roleService = require('../services/role.service');
+const paymentGateway = require('../services/payment-gateway.service');
 
 const params = validate(idParam, 'params');
 const data = (fn) => async (req, res) => res.json({ data: await fn(req) });
@@ -120,7 +121,7 @@ settingsRouter.get('/public', async (req, res) => {
   res.set('Cache-Control', 'no-store').json({
     data: {
       businessName: get('business.name'), currencySymbol: get('app.currency_symbol'), currency: get('app.currency'),
-      deliveryFee: get('orders.default_delivery_fee'), deliveryDistricts: districts, paymentsMode: get('payments.mode'),
+      deliveryFee: get('orders.default_delivery_fee'), deliveryDistricts: districts, paymentsMode: get('payments.mode'), payments: paymentGateway.publicInfo(),
       requirePrescriptionReference: get('sales.require_prescription_reference') === 'true', ticketLegend: get('tickets.legend'),
     },
   });

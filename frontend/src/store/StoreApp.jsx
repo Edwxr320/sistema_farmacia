@@ -2,14 +2,16 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Routes, Route, Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { api } from '../core/api-client.js';
-import { buildQuery, money } from '../core/format.js';
+import { buildQuery } from '../core/format.js';
 import { accessUrl } from '../core/redirect.js';
-import { Button, Icon, Spinner, ErrorState, toast } from '../components/ui.jsx';
+import { Button, Spinner, ErrorState, toast } from '../components/ui.jsx';
 import { ModalHost, closeAllModals } from '../components/modal.jsx';
 import * as views from './views.jsx';
 import { StoreContext, useStore } from './context.jsx';
+import { TopBar, Header, NavRow, Drawer, CategoriesSheet, BottomNav, Footer } from './chrome.jsx';
+import '../styles/store.css';
 
-const LOGO = '/img/Logo-pharma-plus.jpeg';
+const THEME_KEY = 'pharma_plus_store_theme';
 const BRANCH_KEY = 'pp.store.branch';
 
 const storage = {
@@ -28,7 +30,6 @@ const ROUTES = [
   ['/pedidos', 'Orders', true],
   ['/pedidos/:id', 'Order', true],
   ['/cuenta', 'Account', true],
-  ['/registro', 'Register', false],
 ];
 
 export default function StoreApp() {
@@ -43,6 +44,18 @@ export default function StoreApp() {
   const [branches, setBranches] = useState([]);
   const [branchId, setBranchIdState] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [drawer, setDrawer] = useState(false);
+  const [catsOpen, setCatsOpen] = useState(false);
+  // Tema propio de la tienda (independiente del panel y del acceso); se lee antes del primer pintado.
+  const [theme, setThemeState] = useState(() => {
+    try { const t = window.localStorage.getItem(THEME_KEY); if (t === 'light' || t === 'dark') return t; } catch { /* sin almacenamiento */ }
+    return 'light';
+  });
+  const setTheme = useCallback((t) => {
+    setThemeState(t);
+    try { window.localStorage.setItem(THEME_KEY, t); } catch { /* sin almacenamiento */ }
+  }, []);
   const listeners = useRef(new Map());
   const socketRef = useRef(null);
   const live = useRef({ user: null, staff: null, branchId: null });
@@ -52,6 +65,12 @@ export default function StoreApp() {
     document.body.classList.add('store');
     return () => document.body.classList.remove('store');
   }, []);
+  useEffect(() => {
+    document.documentElement.setAttribute('data-store-theme', theme);
+    return () => document.documentElement.removeAttribute('data-store-theme');
+  }, [theme]);
+  // Cierra menús al navegar.
+  useEffect(() => { setDrawer(false); setCatsOpen(false); }, [location.pathname, location.search]);
 
   // Enlaces antiguos (/#/ruta?x=1) → /ruta?x=1
   useEffect(() => {
@@ -161,6 +180,9 @@ export default function StoreApp() {
     branches,
     branchId,
     cartCount,
+    categories,
+    theme,
+    setTheme,
     branch: () => branches.find((b) => b.id === branchId) || null,
     on(event, fn) {
       if (!listeners.current.has(event)) listeners.current.set(event, new Set());
@@ -205,7 +227,15 @@ export default function StoreApp() {
       closeAllModals();
       navigate('');
     },
-  }), [navigate, user, staff, settings, branches, branchId, cartCount, requireLogin, refreshCart, loadSession, disconnectSocket]);
+  }), [navigate, user, staff, settings, branches, branchId, cartCount, categories, theme, setTheme, requireLogin, refreshCart, loadSession, disconnectSocket]);
+
+  // Categorías reales de la sucursal (menú "Categorías", cajón y hoja móvil).
+  useEffect(() => {
+    if (!branchId) return undefined;
+    let alive = true;
+    api.get('/store/categories', { branchId }).then((r) => { if (alive) setCategories(r.data); }).catch(() => { if (alive) setCategories([]); });
+    return () => { alive = false; };
+  }, [branchId]);
 
   let body;
   if (boot.state === 'loading') body = <Spinner label="Cargando Pharma Plus…" />;
@@ -214,8 +244,9 @@ export default function StoreApp() {
     body = (
       <>
         <a href="#main" className="sr-only">Saltar al contenido</a>
-        <TopLine />
-        <Header />
+        <TopBar />
+        <Header onMenu={() => setDrawer(true)} />
+        <NavRow />
         <main className="store-main" id="main" tabIndex={-1}>
           <Routes key={branchId}>
             {ROUTES.map(([path, view, auth]) => <Route key={path} path={path} element={<RouteView view={view} auth={auth} />} />)}
@@ -223,13 +254,18 @@ export default function StoreApp() {
           </Routes>
         </main>
         <Footer />
+        <BottomNav onCategories={() => setCatsOpen(true)} catsOpen={catsOpen} />
+        {drawer ? <Drawer onClose={() => setDrawer(false)} /> : null}
+        {catsOpen ? <CategoriesSheet onClose={() => setCatsOpen(false)} /> : null}
       </>
     );
   }
   return (
     <StoreContext.Provider value={ctx}>
-      {body}
-      <ModalHost />
+      <div className="pp-store" data-theme={theme}>
+        {body}
+        <ModalHost />
+      </div>
     </StoreContext.Provider>
   );
 }
@@ -290,81 +326,4 @@ class ViewBoundary extends React.Component {
     if (this.state.error) return <ErrorState error={this.state.error} onRetry={() => this.setState({ error: null })} />;
     return this.props.children;
   }
-}
-
-function TopLine() {
-  const ctx = useStore();
-  const s = ctx.settings;
-  return (
-    <div className="store-topline">
-      {ctx.staff ? (
-        <span>
-          {`Sesión del personal activa (${ctx.staff.fullName}). La tienda requiere una cuenta de cliente. `}
-          <a href="/admin/" style={{ color: '#fff', textDecoration: 'underline' }}>Ir al panel</a>{' · '}
-          <button type="button" className="btn btn-sm btn-ghost" style={{ color: '#fff' }} onClick={() => ctx.logout()}>Cerrar sesión</button>
-        </span>
-      ) : `Recojo en tienda gratis${s.deliveryFee !== undefined && s.deliveryFee !== null ? ` · ${Number(s.deliveryFee) === 0 ? 'Delivery sin costo de envío' : `Delivery ${money(s.deliveryFee)}`}` : ''} · Pagos de demostración: no se realizan cobros reales`}
-    </div>
-  );
-}
-
-function Header() {
-  const ctx = useStore();
-  const [params] = useSearchParams();
-  const location = useLocation();
-  const q = location.pathname === '/catalogo' ? (params.get('q') || '') : '';
-  return (
-    <header className="store-header">
-      <div className="inner">
-        <Link to="/" className="logo" aria-label="Pharma Plus, inicio"><img src={LOGO} alt="Pharma Plus" /></Link>
-        <form className="search" role="search" onSubmit={(e) => { e.preventDefault(); const v = e.currentTarget.elements.q.value.trim(); ctx.navigate('catalogo', { q: v || undefined }); }}>
-          <Icon name="search" />
-          <input key={q} name="q" className="input" type="search" placeholder="Buscar medicamentos, marcas o principios activos…" aria-label="Buscar productos" defaultValue={q} />
-        </form>
-        <nav aria-label="Principal">
-          {ctx.branches.length > 1 ? (
-            <select className="input" aria-label="Sucursal" style={{ width: 'auto', maxWidth: '190px' }} value={String(ctx.branchId ?? '')} onChange={(e) => ctx.setBranch(e.target.value)}>
-              {ctx.branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-            </select>
-          ) : null}
-          <Link to="/catalogo" className="btn btn-ghost"><Icon name="pill" /><span className="hide-sm">Catálogo</span></Link>
-          {ctx.user ? <Link to="/pedidos" className="btn btn-ghost"><Icon name="receipt" /><span className="hide-sm">Mis pedidos</span></Link> : null}
-          {ctx.user
-            ? <Link to="/cuenta" className="btn btn-ghost" title={ctx.user.fullName}><Icon name="user" /><span className="hide-sm">{ctx.user.fullName.split(' ')[0]}</span></Link>
-            : (ctx.staff ? null : <Link to={accessUrl(`${location.pathname}${location.search}`)} className="btn"><Icon name="user" />Ingresar</Link>)}
-          <Link to="/carrito" className="btn btn-primary" aria-label={`Carrito, ${ctx.cartCount} unidades`}>
-            <Icon name="cart" /><span className="hide-sm">Carrito</span>
-            {ctx.cartCount ? <span className="badge neutral" style={{ marginLeft: '4px' }}>{String(ctx.cartCount)}</span> : null}
-          </Link>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  const ctx = useStore();
-  const s = ctx.settings;
-  return (
-    <footer className="store-footer">
-      <div className="inner">
-        <div>
-          <h4>{s.businessName || 'Pharma Plus'}</h4>
-          <p>Tu salud, nuestra prioridad. Medicamentos y productos de cuidado personal con la atención de nuestros químicos farmacéuticos.</p>
-          <p className="small" style={{ marginTop: '8px' }}>Los medicamentos con receta requieren presentar la receta médica al recoger o recibir el pedido.</p>
-        </div>
-        <div>
-          <h4>Sucursales</h4>
-          {ctx.branches.map((b) => <p key={b.id}>{b.name}{b.address ? <span className="small">{` — ${b.address}${b.district ? `, ${b.district}` : ''}`}</span> : null}</p>)}
-        </div>
-        <div>
-          <h4>Mi cuenta</h4>
-          <p><Link to="/pedidos">Mis pedidos</Link></p>
-          <p><Link to="/cuenta">Datos y direcciones</Link></p>
-          <p><Link to="/carrito">Carrito</Link></p>
-          <p className="small" style={{ marginTop: '8px' }}>{`© ${new Date().getFullYear()} Pharma Plus`}</p>
-        </div>
-      </div>
-    </footer>
-  );
 }

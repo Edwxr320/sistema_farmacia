@@ -12,6 +12,7 @@ const auditRepository = require('../repositories/audit.repository');
 const { reserveFefoInTransaction } = require('./inventory.service');
 const { resolveBranch, assertBranchAccess, assertBranchAccessInTx, visibleBranchIds } = require('./branch-access.service');
 const { emitToBranch, emitInventoryChanged } = require('./realtime.service');
+const paymentGateway = require('./payment-gateway.service');
 
 const DEMO_REJECTION = 'DEMO: operación rechazada por el emisor simulado';
 
@@ -236,15 +237,41 @@ async function restockAllocations(conn, saleId, performedBy, reason) {
  * se anula con sale_voids y cada lote se repone con SALE_VOID_IN, todo en la misma transacción.
  */
 async function create(data, auth, ctx, { idempotencyKey } = {}) {
+  return createWithOptions(data, auth, ctx, { idempotencyKey });
+}
+
+/** Ventana de fechas que admite el generador de demostración (scripts/seed-dashboard-demo.js). */
+const DEMO_MAX_AGE_DAYS = 30;
+
+/**
+ * USO INTERNO EXCLUSIVO del generador de datos de demostración (no se expone en ninguna ruta ni validador).
+ * Misma venta que create() —cotización, validaciones, FEFO, detalle, pagos DEMO, ticket, auditoría y
+ * movimientos— con una única diferencia: sold_at toma la fecha histórica indicada, validada aquí:
+ * no futura y dentro de los últimos 30 días. Las demás fechas (pagos, movimientos, auditoría) son las reales.
+ */
+async function createForDemo(data, auth, ctx, { idempotencyKey, soldAt } = {}) {
+  const when = soldAt instanceof Date ? new Date(soldAt.getTime()) : null;
+  if (!when || Number.isNaN(when.getTime())) throw AppError.badRequest('Fecha de venta de demostración inválida');
+  const now = Date.now();
+  if (when.getTime() > now) throw AppError.badRequest('La fecha de venta de demostración no puede ser futura');
+  if (when.getTime() < now - DEMO_MAX_AGE_DAYS * 86400000) {
+    throw AppError.badRequest(`La fecha de venta de demostración debe estar dentro de los últimos ${DEMO_MAX_AGE_DAYS} días`);
+  }
+  when.setMilliseconds(0);
+  return createWithOptions(data, auth, ctx, { idempotencyKey, soldAt: when });
+}
+
+async function createWithOptions(data, auth, ctx, { idempotencyKey, soldAt = null }) {
   // Idempotencia: con la misma clave del mismo usuario se devuelve la venta ya registrada.
   // El bloqueo con nombre se toma ANTES del BEGIN y se libera DESPUÉS del COMMIT: un reintento
   // simultáneo espera y luego ve la venta ya confirmada, en lugar de duplicarla.
+  paymentGateway.assertMethodsAvailable((data.payments || []).map((p) => p.method));
   const lock = idempotencyKey
     ? { name: `pp_sale_${crypto.createHash('sha1').update(`${auth.userId}:${idempotencyKey}`).digest('hex')}`.slice(0, 64), timeoutSeconds: 15 }
     : null;
   let outcome;
   try {
-    outcome = await withTransaction(ctx, (conn) => createInTransaction(conn, data, auth, idempotencyKey), { lock });
+    outcome = await withTransaction(ctx, (conn) => createInTransaction(conn, data, auth, idempotencyKey, soldAt), { lock });
   } catch (err) {
     if (err.code === 'LOCK_TIMEOUT') throw AppError.conflict('La venta se está procesando; intente nuevamente', 'SALE_IN_PROGRESS');
     throw err;
@@ -252,7 +279,7 @@ async function create(data, auth, ctx, { idempotencyKey } = {}) {
   return finishCreate(outcome);
 }
 
-async function createInTransaction(conn, data, auth, idempotencyKey) {
+async function createInTransaction(conn, data, auth, idempotencyKey, soldAt = null) {
     const branchId = await resolveBranch(auth, data.branchId, { conn });
     {
       if (idempotencyKey) {
@@ -294,6 +321,7 @@ async function createInTransaction(conn, data, auth, idempotencyKey) {
       const saleId = await saleRepository.insertSale(conn, {
         saleNumber, branchId, customerId, customerName, customerDocument, sellerId: auth.userId, cashSessionId: session.id,
         subtotal: fromCents(q.subtotalCents), discountTotal: fromCents(q.discountCents), total: fromCents(q.totalCents), notes: data.notes,
+        soldAt,
       });
 
       for (const line of q.lines) {
@@ -456,6 +484,6 @@ async function payments(filters, auth, ctx) {
 }
 
 module.exports = {
-  quote, catalog, create, voidSale, voidSaleInTransaction, get, list, payments, computeQuote, planPayments, loadSale,
+  quote, catalog, create, createForDemo, DEMO_MAX_AGE_DAYS, voidSale, voidSaleInTransaction, get, list, payments, computeQuote, planPayments, loadSale,
   restockAllocations, demoReference,
 };

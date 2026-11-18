@@ -7,6 +7,7 @@ import { openModal, ModalBody } from '../../components/modal.jsx';
 import { formModal } from '../../components/form.jsx';
 import { money, number, date, errorMessage } from '../../core/format.js';
 import { Cell } from './_shared.jsx';
+import { ProductImage, hasProductImage } from '../../components/ProductImage.jsx';
 
 export function Products() {
   const ctx = useAdmin();
@@ -92,7 +93,7 @@ function ProductsList({ categories, laboratories }) {
               <div>
                 <Table
                   columns={[
-                    { label: '', render: (p) => (p.imageUrl ? <img src={p.imageUrl} alt="" width={40} height={40} style={{ width: '40px', height: '40px', objectFit: 'contain' }} /> : null) },
+                    { label: '', render: (p) => <span className={`pp-pthumb${hasProductImage(p) ? ' has-photo' : ''}`}><ProductImage product={p} className="pp-pthumb-img" /></span> },
                     { label: 'Producto', render: (p) => <Cell title={p.name} sub={[p.sku, p.barcode, p.presentation].filter(Boolean).join(' · ')} /> },
                     { label: 'Categoría', render: (p) => p.category.name },
                     { label: 'Laboratorio', render: (p) => p.laboratory?.name },
@@ -100,7 +101,7 @@ function ProductsList({ categories, laboratories }) {
                     { label: 'Precio', num: true, render: (p) => money(p.salePrice) },
                     { label: 'Estado', render: (p) => <Badge kind="product" code={p.status} /> },
                   ]}
-                  rows={r.data} empty="Sin productos con esos filtros" onRowClick={(p) => detail(p.id)}
+                  rows={r.data} rowKey={(p) => p.id} empty="Sin productos con esos filtros" onRowClick={(p) => detail(p.id)}
                 />
                 <Pagination p={r.pagination} onChange={(page) => setF((x) => ({ ...x, page }))} />
               </div>
@@ -171,7 +172,7 @@ function ProductDetail({ id, onEdit, onChanged, close, setTitle }) {
                 <div className="grid grid-2">
                   <Card title="Datos">
                     <div className="row" style={{ alignItems: 'flex-start' }}>
-                      {p.imageUrl ? <img src={p.imageUrl} alt={p.name} style={{ width: '120px', height: '120px', objectFit: 'contain', border: '1px solid var(--border)', borderRadius: '8px' }} /> : null}
+                      <span className={`pp-pthumb lg${hasProductImage(p) ? ' has-photo' : ''}`}><ProductImage product={p} alt={p.name} loading="eager" className="pp-pthumb-img" /></span>
                       <div className="grow">
                         <KV pairs={[['SKU', p.sku], ['Código de barras', p.barcode], ['Categoría', p.category.name], ['Laboratorio', p.laboratory?.name], ['Principio activo', p.activeIngredient],
                           ['Concentración', p.concentration], ['Forma', p.dosageForm], ['Presentación', p.presentation], ['Registro sanitario', p.sanitaryRegistration],

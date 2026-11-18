@@ -73,12 +73,16 @@ async function findCustomer(conn, id) {
 
 // ------------------------------------------------------------------ escritura
 async function insertSale(conn, s) {
+  // sold_at solo se fija aquí cuando lo indica saleService.createForDemo (generador de demostración, fecha ya
+  // validada en el servidor). La API pública nunca lo envía: la venta toma CURRENT_TIMESTAMP como siempre.
+  // Tras el INSERT, trg_sales_bu impide cambiar sold_at.
+  const soldAt = s.soldAt instanceof Date ? s.soldAt : null;
   const [res] = await conn.execute(
     `INSERT INTO sales (sale_number, branch_id, customer_id, customer_name_snapshot, customer_document_snapshot,
-                        seller_user_id, cash_session_id, sale_channel, status, subtotal, discount_total, delivery_fee, total, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 'POS', 'COMPLETED', ?, ?, 0.00, ?, ?)`,
+                        seller_user_id, cash_session_id, sale_channel, status, subtotal, discount_total, delivery_fee, total, notes${soldAt ? ', sold_at' : ''})
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'POS', 'COMPLETED', ?, ?, 0.00, ?, ?${soldAt ? ', ?' : ''})`,
     [s.saleNumber, s.branchId, s.customerId ?? null, s.customerName ?? null, s.customerDocument ?? null,
-      s.sellerId, s.cashSessionId, s.subtotal, s.discountTotal, s.total, s.notes ?? null],
+      s.sellerId, s.cashSessionId, s.subtotal, s.discountTotal, s.total, s.notes ?? null, ...(soldAt ? [soldAt] : [])],
   );
   return res.insertId;
 }

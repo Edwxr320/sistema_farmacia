@@ -9,6 +9,7 @@ import { accessUrl } from './core/redirect.js';
 const AdminApp = lazy(() => import('./admin/AdminApp.jsx'));
 const StoreApp = lazy(() => import('./store/StoreApp.jsx'));
 const AccessPage = lazy(() => import('./access/AccessPage.jsx'));
+const RegisterPage = lazy(() => import('./access/RegisterPage.jsx'));
 
 /** Login antiguo de la tienda (/ingresar?next=...) → acceso único conservando la ruta de retorno. */
 function LegacyLogin() {
@@ -22,6 +23,7 @@ export default function App() {
       <Suspense fallback={<Spinner label="Cargando Pharma Plus…" />}>
         <Routes>
           <Route path="/acceso" element={<AccessPage />} />
+          <Route path="/registro" element={<RegisterPage />} />
           <Route path="/ingresar" element={<LegacyLogin />} />
           <Route path="/admin/*" element={<AdminApp />} />
           <Route path="/*" element={<StoreApp />} />

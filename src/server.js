@@ -15,6 +15,14 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
+// Avisos de despliegue (no bloquean el arranque).
+if (config.payments.provider === 'demo') {
+  logger.warn('PAYMENT_PROVIDER=demo: los pagos electrónicos son SIMULADOS (sin cobro real)');
+}
+if (config.isProduction && config.uploads.dir.startsWith(require('node:path').resolve(__dirname, '..'))) {
+  logger.warn({ dir: config.uploads.dir }, 'UPLOADS_DIR está dentro del proyecto: use un volumen persistente para no perder imágenes al desplegar');
+}
+
 async function verifyDatabase() {
   const conn = await getPool().getConnection();
   try {

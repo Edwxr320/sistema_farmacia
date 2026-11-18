@@ -22,6 +22,9 @@ secrets*.json
 logs/
 *.log
 coverage/
+.nyc_output/
+*.lcov
+npm-debug.log*
 tmp/
 temp/
 .cache/
@@ -39,14 +42,28 @@ backups/
 *.7z
 *.rar
 *.sql.gz
+*.sql.bak
 dump*.sql
 *_dump.sql
 
-# Imágenes subidas por los usuarios
+# Imágenes subidas por los usuarios (en producción viven en UPLOADS_DIR, fuera del repositorio)
 uploads/
+
+# Copias de trabajo de imágenes de producto: las que usa la app están en frontend/src/assets/store/products/
+pharma_plus_productos_png/
+
+# Capturas de depuración de pruebas fallidas (las evidencias válidas sí se versionan)
+evidencias/**/*-fallo.png
+
+# Bocetos de diseño: referencias del proceso de diseño, conservadas fuera del repositorio
+# (no son necesarios para ejecutar Pharma Plus)
+Bocetos/
 
 # Sistema operativo y editores
 .DS_Store
 Thumbs.db
+Desktop.ini
+*.swp
+*~
 .vscode/
 .idea/

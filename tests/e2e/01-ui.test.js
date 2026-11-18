@@ -170,7 +170,7 @@ test('frontend E2E: panel administrativo y tienda virtual', { skip: !enabled && 
   await t.test('tienda: registro, catálogo, carrito y pedido con receta', () => step(shopper, 'tienda', async () => {
     await shopper.goto(`${BASE}/`, { waitUntil: 'networkidle0' });
     await settle(shopper, '#main');
-    assert.match(await textOf(shopper, '.hero'), /Tu salud, nuestra prioridad/);
+    assert.match(await textOf(shopper, '.hero'), /Cuida tu salud/);
     await assertCleanText(shopper, '#main', '04-store-home');
     await shot(shopper, '04-store-home');
 

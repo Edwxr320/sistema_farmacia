@@ -39,6 +39,11 @@ const config = Object.freeze({
     maxImageBytes: int('UPLOAD_MAX_IMAGE_KB', 2048, { min: 50, max: 10240 }) * 1024,
   }),
 
+  payments: Object.freeze({
+    // demo = pagos electrónicos simulados (sin cobro); disabled = solo efectivo. Ver payment-gateway.service.js
+    provider: str('PAYMENT_PROVIDER', 'demo').toLowerCase(),
+  }),
+
   jobs: Object.freeze({
     enabled: str('JOBS_ENABLED', nodeEnv === 'test' ? 'false' : 'true') === 'true',
     expiryAlertsHour: int('EXPIRY_ALERTS_HOUR', 6, { min: 0, max: 23 }),
@@ -76,6 +81,9 @@ function validateConfig({ requireAuthSecrets = true } = {}) {
     problems.push('DB_USER=root no está permitido: use el usuario restringido pharma_app');
   }
   if (!config.db.password) problems.push('DB_PASSWORD no está definido');
+  if (!['demo', 'disabled'].includes(config.payments.provider)) {
+    problems.push('PAYMENT_PROVIDER debe ser "demo" o "disabled" (no hay pasarela real configurada)');
+  }
   if (requireAuthSecrets) {
     if (config.auth.jwtSecret.length < 32) problems.push('JWT_SECRET debe tener al menos 32 caracteres');
     if (config.auth.csrfSecret.length < 32) problems.push('CSRF_SECRET debe tener al menos 32 caracteres');
