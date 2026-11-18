@@ -2,7 +2,7 @@
 
 /**
  * Registro de clientes (/registro) — Bocetos/recortes-registro — en PC y móvil, tema claro y oscuro.
- * Capturas en evidencias/registro/ y comprobación del comportamiento real (sin cambios respecto al registro anterior):
+ * Capturas en $E2E_SCREENSHOTS/registro/ (carpeta temporal; las capturas del README salen de npm run capturas:reales) y comprobación del comportamiento real (sin cambios respecto al registro anterior):
  * obligatorios, contraseñas distintas, validaciones del servidor (DNI, tipo sin número), correo duplicado, CSRF,
  * creación exclusiva de clientes, redirección, enlace al acceso único y tema compartido con /acceso (pp.theme).
  * Solo corre sobre la base TEMPORAL (npm run test:e2e).
@@ -17,7 +17,7 @@ const path = require('node:path');
 
 const enabled = process.env.PP_E2E === '1' && process.env.DB_NAME && process.env.DB_NAME !== 'pharma_plus';
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const OUT = path.join(__dirname, '..', '..', 'evidencias', 'registro');
+const OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'registro');
 const PASSWORD = 'Cliente2026Seguro';
 
 test('registro de clientes: diseño y comportamiento', { skip: !enabled && 'Requiere PP_E2E=1 y una base temporal (npm run test:e2e)', timeout: 300000 }, async (t) => {
@@ -81,7 +81,7 @@ test('registro de clientes: diseño y comportamiento', { skip: !enabled && 'Requ
 
   // ------------------------------------------------------------- capturas
   // /acceso y /registro comparten AccessLayout: fondo, ilustración, logo, tema y bienvenida idénticos; solo cambia la tarjeta.
-  const ACCESS_OUT = path.join(__dirname, '..', '..', 'evidencias', 'access');
+  const ACCESS_OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'access');
   fs.mkdirSync(ACCESS_OUT, { recursive: true });
   const shell = (page) => page.evaluate(() => ({
     art: document.querySelector('.access-art').outerHTML,

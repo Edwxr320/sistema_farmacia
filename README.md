@@ -15,7 +15,9 @@
 
 </div>
 
-![Tienda virtual de Pharma Plus](evidencias/tienda/store-desktop-1440-claro.png)
+| Tienda virtual | Panel administrativo |
+|---|---|
+| ![Tienda virtual de Pharma Plus](evidencias/tienda/store-desktop-1440-claro.png) | ![Panel administrativo de Pharma Plus](evidencias/admin/modulos/dashboard-oscuro.png) |
 
 ---
 
@@ -122,7 +124,7 @@ sistema_farmacia/
 │   ├── migrations/              # Cambios posteriores (001_user_sessions.sql)
 │   └── setup/                   # Creación del usuario restringido pharma_app
 ├── docs/                        # Referencia técnica y documento de exposición
-├── evidencias/                  # Capturas reales del sistema (generadas por las pruebas E2E)
+├── evidencias/                  # Capturas reales del sistema (npm run capturas:reales)
 ├── frontend/                    # React + Vite
 │   ├── public/img/              # Logos
 │   └── src/
@@ -166,80 +168,88 @@ El menú y los botones se muestran según los permisos efectivos del usuario, y 
 
 ## 9. Capturas del sistema
 
-> Todas las capturas son reales: las genera la suite E2E (`npm run test:e2e`) recorriendo la aplicación con Chrome sobre una base de datos temporal.
+> **Capturas reales.** Se toman con Chrome sobre la aplicación en funcionamiento, conectada a la base MariaDB `pharma_plus` con sus productos, fotografías, ventas y pedidos reales (`npm run capturas:reales`). La sesión de capturas trabaja dentro de una transacción que se revierte al final; el script compara el `CHECKSUM` de todas las tablas antes y después y falla si algo cambia. Cada tema se activa con la preferencia real de la aplicación y se verifica antes de capturar. Los correos y teléfonos de clientes y proveedores aparecen difuminados porque el repositorio es público.
 
 ### Tienda virtual
 
-| Inicio | Catálogo |
+| Tema claro | Tema oscuro |
 |---|---|
-| ![Inicio de la tienda](evidencias/tienda/store-desktop-1440-claro.png) | ![Catálogo de productos](evidencias/tienda/vistas/catalogo-desktop-claro.png) |
-| **Detalle de producto** | **Carrito** |
-| ![Detalle de producto](evidencias/tienda/vistas/producto-desktop-claro.png) | ![Carrito de compras](evidencias/tienda/vistas/carrito-desktop-claro.png) |
-| **Checkout** | **Mi cuenta** |
-| ![Checkout](evidencias/tienda/vistas/checkout-desktop-claro.png) | ![Mi cuenta](evidencias/tienda/vistas/cuenta-desktop-claro.png) |
+| ![Inicio de la tienda, tema claro](evidencias/tienda/store-desktop-1440-claro.png) | ![Inicio de la tienda, tema oscuro](evidencias/tienda/store-desktop-1440-oscuro.png) |
+| **Catálogo** | **Catálogo** |
+| ![Catálogo, tema claro](evidencias/tienda/vistas/catalogo-desktop-claro.png) | ![Catálogo, tema oscuro](evidencias/tienda/vistas/catalogo-desktop-oscuro.png) |
+| **Detalle de producto** | **Detalle de producto** |
+| ![Detalle de producto, tema claro](evidencias/tienda/vistas/producto-desktop-claro.png) | ![Detalle de producto, tema oscuro](evidencias/tienda/vistas/producto-desktop-oscuro.png) |
+| **Carrito** | **Carrito** |
+| ![Carrito, tema claro](evidencias/tienda/vistas/carrito-desktop-claro.png) | ![Carrito, tema oscuro](evidencias/tienda/vistas/carrito-desktop-oscuro.png) |
+| **Checkout** (sin confirmar el pedido) | **Checkout** (sin confirmar el pedido) |
+| ![Checkout, tema claro](evidencias/tienda/vistas/checkout-desktop-claro.png) | ![Checkout, tema oscuro](evidencias/tienda/vistas/checkout-desktop-oscuro.png) |
 
 <details>
-<summary><b>Tienda en modo oscuro y en móvil</b></summary>
+<summary><b>Categorías, cuenta del cliente y vista móvil</b></summary>
 
-| Inicio (oscuro) | Catálogo (oscuro) |
+| Tema claro | Tema oscuro |
 |---|---|
-| ![Inicio oscuro](evidencias/tienda/store-desktop-1440-oscuro.png) | ![Catálogo oscuro](evidencias/tienda/vistas/catalogo-desktop-oscuro.png) |
+| ![Menú de categorías, tema claro](evidencias/tienda/store-desktop-categorias-claro.png) | ![Menú de categorías, tema oscuro](evidencias/tienda/store-desktop-categorias-oscuro.png) |
+| ![Cuenta del cliente, tema claro](evidencias/tienda/vistas/cuenta-desktop-claro.png) | ![Cuenta del cliente, tema oscuro](evidencias/tienda/vistas/cuenta-desktop-oscuro.png) |
 
-| Inicio (móvil) | Menú (móvil) | Categorías (móvil) | Inicio oscuro (móvil) |
-|---|---|---|---|
-| ![Inicio móvil](evidencias/tienda/store-mobile-claro.png) | ![Menú móvil](evidencias/tienda/store-mobile-menu.png) | ![Categorías móvil](evidencias/tienda/store-mobile-categorias.png) | ![Inicio móvil oscuro](evidencias/tienda/store-mobile-oscuro.png) |
+| Inicio (claro) | Catálogo (claro) | Producto (claro) | Inicio (oscuro) | Catálogo (oscuro) | Producto (oscuro) |
+|---|---|---|---|---|---|
+| ![Inicio móvil claro](evidencias/tienda/store-mobile-claro.png) | ![Catálogo móvil claro](evidencias/tienda/vistas/catalogo-mobile-claro.png) | ![Producto móvil claro](evidencias/tienda/vistas/producto-mobile-claro.png) | ![Inicio móvil oscuro](evidencias/tienda/store-mobile-oscuro.png) | ![Catálogo móvil oscuro](evidencias/tienda/vistas/catalogo-mobile-oscuro.png) | ![Producto móvil oscuro](evidencias/tienda/vistas/producto-mobile-oscuro.png) |
 
 </details>
-
-### Registro e inicio de sesión
-
-| Acceso único | Registro de clientes |
-|---|---|
-| ![Inicio de sesión](evidencias/login/login-pc-claro.png) | ![Registro de clientes](evidencias/registro/registro-pc-claro.png) |
-
-| Acceso (oscuro, móvil) | Registro (oscuro, móvil) |
-|---|---|
-| ![Acceso móvil oscuro](evidencias/login/login-movil-oscuro.png) | ![Registro móvil oscuro](evidencias/registro/registro-movil-oscuro.png) |
 
 ### Panel administrativo
 
-| Dashboard | Punto de venta (POS) |
+| Tema claro | Tema oscuro |
 |---|---|
-| ![Dashboard](evidencias/admin/modulos/dashboard-claro.png) | ![Punto de venta](evidencias/admin/modulos/pos-claro.png) |
-| **Productos** | **Stock por sucursal** |
-| ![Gestión de productos](evidencias/admin/modulos/products-claro.png) | ![Stock](evidencias/admin/modulos/stock-claro.png) |
-| **Lotes y vencimientos** | **Ventas** |
-| ![Lotes y vencimientos](evidencias/admin/modulos/batches-claro.png) | ![Ventas](evidencias/admin/modulos/sales-claro.png) |
-| **Proveedores** | **Usuarios** |
-| ![Proveedores](evidencias/admin/modulos/suppliers-claro.png) | ![Usuarios](evidencias/admin/modulos/users-claro.png) |
-| **Roles y permisos** | **Reportes** |
-| ![Roles y permisos](evidencias/admin/modulos/roles-claro.png) | ![Reportes](evidencias/admin/modulos/reports-claro.png) |
+| ![Dashboard, tema claro](evidencias/admin/modulos/dashboard-claro.png) | ![Dashboard, tema oscuro](evidencias/admin/modulos/dashboard-oscuro.png) |
+| **Productos** | **Productos** |
+| ![Gestión de productos, tema claro](evidencias/admin/modulos/products-claro.png) | ![Gestión de productos, tema oscuro](evidencias/admin/modulos/products-oscuro.png) |
+| **Inventario y stock** | **Inventario y stock** |
+| ![Stock, tema claro](evidencias/admin/modulos/stock-claro.png) | ![Stock, tema oscuro](evidencias/admin/modulos/stock-oscuro.png) |
+| **Punto de venta** (productos seleccionados, sin cobrar) | **Punto de venta** (productos seleccionados, sin cobrar) |
+| ![POS, tema claro](evidencias/admin/modulos/pos-claro.png) | ![POS, tema oscuro](evidencias/admin/modulos/pos-oscuro.png) |
+| **Ventas** | **Ventas** |
+| ![Ventas, tema claro](evidencias/admin/modulos/sales-claro.png) | ![Ventas, tema oscuro](evidencias/admin/modulos/sales-oscuro.png) |
+| **Reportes** | **Reportes** |
+| ![Reportes, tema claro](evidencias/admin/modulos/reports-claro.png) | ![Reportes, tema oscuro](evidencias/admin/modulos/reports-oscuro.png) |
 
 <details>
-<summary><b>Más módulos del panel (caja, pedidos, kardex, transferencias, alertas…)</b></summary>
+<summary><b>Lotes, pedidos, caja, proveedores, usuarios y roles</b></summary>
 
-| Caja | Pedidos online |
+| Tema claro | Tema oscuro |
 |---|---|
-| ![Caja](evidencias/admin/modulos/cash-claro.png) | ![Pedidos online](evidencias/admin/modulos/orders-claro.png) |
-| **Entradas de mercadería** | **Kardex** |
-| ![Entradas](evidencias/admin/modulos/entries-claro.png) | ![Kardex](evidencias/admin/modulos/kardex-claro.png) |
-| **Transferencias** | **Alertas de inventario** |
-| ![Transferencias](evidencias/admin/modulos/transfers-claro.png) | ![Alertas](evidencias/alertas/alertas-modulo-pc.png) |
-| **Devoluciones** | **Configuración** |
-| ![Devoluciones](evidencias/admin/modulos/returns-claro.png) | ![Configuración](evidencias/admin/modulos/settings-claro.png) |
+| ![Lotes y vencimientos, tema claro](evidencias/admin/modulos/batches-claro.png) | ![Lotes y vencimientos, tema oscuro](evidencias/admin/modulos/batches-oscuro.png) |
+| ![Pedidos online, tema claro](evidencias/admin/modulos/orders-claro.png) | ![Pedidos online, tema oscuro](evidencias/admin/modulos/orders-oscuro.png) |
+| ![Caja, tema claro](evidencias/admin/modulos/cash-claro.png) | ![Caja, tema oscuro](evidencias/admin/modulos/cash-oscuro.png) |
+| ![Proveedores, tema claro](evidencias/admin/modulos/suppliers-claro.png) | ![Proveedores, tema oscuro](evidencias/admin/modulos/suppliers-oscuro.png) |
+| ![Usuarios, tema claro](evidencias/admin/modulos/users-claro.png) | ![Usuarios, tema oscuro](evidencias/admin/modulos/users-oscuro.png) |
+| ![Roles y permisos, tema claro](evidencias/admin/modulos/roles-claro.png) | ![Roles y permisos, tema oscuro](evidencias/admin/modulos/roles-oscuro.png) |
 
 </details>
 
 <details>
-<summary><b>Panel en modo oscuro y en móvil</b></summary>
+<summary><b>Panel en móvil</b></summary>
 
-| Dashboard (oscuro) | POS (oscuro) |
-|---|---|
-| ![Dashboard oscuro](evidencias/admin/modulos/dashboard-oscuro.png) | ![POS oscuro](evidencias/admin/modulos/pos-oscuro.png) |
+| Dashboard (claro) | Productos (claro) | Dashboard (oscuro) | Productos (oscuro) |
+|---|---|---|---|
+| ![Dashboard móvil claro](evidencias/admin/admin-mobile-claro.png) | ![Productos móvil claro](evidencias/admin/admin-mobile-productos-claro.png) | ![Dashboard móvil oscuro](evidencias/admin/admin-mobile-oscuro.png) | ![Productos móvil oscuro](evidencias/admin/admin-mobile-productos-oscuro.png) |
 
-| Panel móvil | Productos móvil (oscuro) |
+</details>
+
+### Acceso y registro
+
+| Tema claro | Tema oscuro |
 |---|---|
-| ![Panel móvil](evidencias/admin/admin-mobile-claro.png) | ![Productos móvil](evidencias/admin/admin-mobile-productos-oscuro.png) |
+| ![Inicio de sesión, tema claro](evidencias/login/login-pc-claro.png) | ![Inicio de sesión, tema oscuro](evidencias/login/login-pc-oscuro.png) |
+| ![Registro de clientes, tema claro](evidencias/registro/registro-pc-claro.png) | ![Registro de clientes, tema oscuro](evidencias/registro/registro-pc-oscuro.png) |
+
+<details>
+<summary><b>Acceso y registro en móvil</b></summary>
+
+| Acceso (claro) | Registro (claro) | Acceso (oscuro) | Registro (oscuro) |
+|---|---|---|---|
+| ![Acceso móvil claro](evidencias/login/login-movil-claro.png) | ![Registro móvil claro](evidencias/registro/registro-movil-claro.png) | ![Acceso móvil oscuro](evidencias/login/login-movil-oscuro.png) | ![Registro móvil oscuro](evidencias/registro/registro-movil-oscuro.png) |
 
 </details>
 
@@ -339,11 +349,13 @@ npm run test:unit         # unitarias (sin base de datos)
 npm run test:integration  # integración HTTP contra MariaDB, dentro de una transacción que se revierte
 npm test                  # build + todas las pruebas
 npm run test:tempdb       # toda la suite (incluida concurrencia real) en una base temporal que se elimina al final
-npm run test:e2e          # Chrome real (Puppeteer) contra una base temporal; regenera las capturas de evidencias/
+npm run test:e2e          # Chrome real (Puppeteer) contra una base temporal
 ```
 
 - Las pruebas de integración usan la base real pero **revierten** todos sus cambios.
 - `test:tempdb` y `test:e2e` necesitan el cliente `mariadb` y una cuenta administrativa local para crear la base temporal (`MARIADB_CLI`, `TEST_DB_ADMIN_USER`, `TEST_DB_ADMIN_PASSWORD`; por defecto, `root` de XAMPP).
+- `test:e2e` guarda sus capturas en una carpeta temporal (`E2E_SCREENSHOTS`); no modifica `evidencias/`.
+- `npm run capturas:reales` regenera las capturas del README con la base real (transacción revertida y verificación de `CHECKSUM`).
 - `test:e2e` usa `CHROME_PATH` (por defecto `C:\Program Files\Google\Chrome\Application\chrome.exe`).
 
 Cobertura funcional: autenticación y bloqueo, permisos, catálogo, entradas, FEFO, ajustes, POS y caja, pagos rechazados, devoluciones, transferencias, tienda y pedidos, reportes, ventas y checkouts **concurrentes** (sin stock negativo ni doble descuento) y recorridos completos en el navegador.

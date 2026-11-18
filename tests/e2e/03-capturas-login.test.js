@@ -4,7 +4,7 @@
  * Capturas del acceso único (/acceso) — Bocetos/recortes-login — en PC y móvil, tema claro y oscuro.
  * Comprueba también: logo según el tema, persistencia del tema, sin desborde horizontal (360 px, 390 px, tableta, PC),
  * sin opciones inexistentes (Google, Apple, Recordarme, ¿Olvidaste…?) y que el ingreso sigue funcionando.
- * Solo corre sobre la base TEMPORAL (npm run test:e2e). Guarda las imágenes en evidencias/login/.
+ * Solo corre sobre la base TEMPORAL (npm run test:e2e). Guarda las imágenes en $E2E_SCREENSHOTS/login/ (carpeta temporal; las capturas del README salen de npm run capturas:reales).
  */
 
 require('../helpers/setup-env');
@@ -16,7 +16,7 @@ const path = require('node:path');
 
 const enabled = process.env.PP_E2E === '1' && process.env.DB_NAME && process.env.DB_NAME !== 'pharma_plus';
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const OUT = path.join(__dirname, '..', '..', 'evidencias', 'login');
+const OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'login');
 const PASSWORD = 'Farmacia2026Segura';
 
 test('capturas del acceso único: PC y móvil, claro y oscuro', { skip: !enabled && 'Requiere PP_E2E=1 y una base temporal (npm run test:e2e)', timeout: 240000 }, async (t) => {

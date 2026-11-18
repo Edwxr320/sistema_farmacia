@@ -19,6 +19,8 @@
     "sessions:cleanup": "node scripts/cleanup-sessions.js",
     "seed:dashboard-demo": "node scripts/seed-dashboard-demo.js",
     "seed:inventory-alerts": "node scripts/seed-inventory-alerts.js",
+    "capturas:reales": "node scripts/capturas-reales.js",
+    "precapturas:reales": "npm run build",
     "test": "node --test --test-concurrency=1 \"tests/**/*.test.js\"",
     "test:unit": "node --test \"tests/unit/*.test.js\"",
     "test:tempdb": "node scripts/test-tempdb.js",

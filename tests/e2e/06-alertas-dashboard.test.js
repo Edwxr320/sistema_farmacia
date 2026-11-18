@@ -3,7 +3,7 @@
 /**
  * Alertas reales de inventario en la INTERFAZ del panel: se crean con el generador (scripts/lib/inventory-alerts.js,
  * servicios de ajustes y entradas) sobre la base TEMPORAL de npm run test:e2e y se comprueba que el Dashboard las
- * muestra (KPI «Stock bajo» y lista de alertas). Captura en evidencias/alertas/.
+ * muestra (KPI «Stock bajo» y lista de alertas). Captura en $E2E_SCREENSHOTS/alertas/ (carpeta temporal; las capturas del README salen de npm run capturas:reales).
  */
 
 require('../helpers/setup-env');
@@ -15,7 +15,7 @@ const path = require('node:path');
 
 const enabled = process.env.PP_E2E === '1' && process.env.DB_NAME && process.env.DB_NAME !== 'pharma_plus';
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const OUT = path.join(__dirname, '..', '..', 'evidencias', 'alertas');
+const OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'alertas');
 const PASSWORD = 'Farmacia2026Segura';
 
 test('alertas reales de inventario visibles en el Dashboard', { skip: !enabled && 'Requiere PP_E2E=1 y una base temporal (npm run test:e2e)', timeout: 300000 }, async (t) => {

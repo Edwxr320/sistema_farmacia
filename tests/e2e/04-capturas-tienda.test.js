@@ -5,7 +5,7 @@
  * presentación: logo según el tema, contador real del carrito, menú de categorías reales, navegación inferior,
  * persistencia del tema (independiente del panel y del acceso), sin desborde en 360/390/430 px, tableta y PC,
  * y que no se prometa "Envíos a todo el Perú". Corre solo sobre la base TEMPORAL (npm run test:e2e);
- * los productos de prueba se crean por la API y desaparecen con la base. Guarda las imágenes en evidencias/tienda/.
+ * los productos de prueba se crean por la API y desaparecen con la base. Guarda las imágenes en $E2E_SCREENSHOTS/tienda/ (carpeta temporal; las capturas del README salen de npm run capturas:reales).
  */
 
 require('../helpers/setup-env');
@@ -17,7 +17,7 @@ const path = require('node:path');
 
 const enabled = process.env.PP_E2E === '1' && process.env.DB_NAME && process.env.DB_NAME !== 'pharma_plus';
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const OUT = path.join(__dirname, '..', '..', 'evidencias', 'tienda');
+const OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'tienda');
 const PASSWORD = 'Farmacia2026Segura';
 
 test('capturas de la tienda: PC y móvil, claro y oscuro', { skip: !enabled && 'Requiere PP_E2E=1 y una base temporal (npm run test:e2e)', timeout: 300000 }, async (t) => {

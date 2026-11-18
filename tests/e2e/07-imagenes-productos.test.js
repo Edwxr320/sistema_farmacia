@@ -11,7 +11,7 @@
  *   - detalle del panel, tarjetas y detalle de la tienda;
  *   - ninguna solicitud de imagen falla y no hay desplazamiento horizontal (PC y móvil).
  * Base TEMPORAL de npm run test:e2e: para reproducir los IDs reales se adelanta el AUTO_INCREMENT de products
- * (solo en esa base). Capturas en evidencias/product-images/e2e/.
+ * (solo en esa base). Capturas en $E2E_SCREENSHOTS/product-images/e2e/ (carpeta temporal; las capturas del README salen de npm run capturas:reales).
  */
 
 const os = require('node:os');
@@ -26,7 +26,7 @@ const assert = require('node:assert/strict');
 
 const enabled = process.env.PP_E2E === '1' && process.env.DB_NAME && process.env.DB_NAME !== 'pharma_plus';
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const OUT = path.join(__dirname, '..', '..', 'evidencias', 'product-images', 'e2e');
+const OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'product-images', 'e2e');
 const ASSETS = path.join(__dirname, '..', '..', 'frontend', 'src', 'assets', 'store', 'products');
 const PASSWORD = 'Farmacia2026Segura';
 

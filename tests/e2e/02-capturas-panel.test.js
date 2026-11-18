@@ -3,7 +3,7 @@
 /**
  * Capturas del panel administrativo (diseño de Bocetos/recortes/admin-*.png) en PC y móvil, tema claro y oscuro.
  * Solo corre sobre la base TEMPORAL de npm run test:e2e: los datos de prueba (ventas, pedidos, lotes) se crean por la API
- * y desaparecen con la base. Guarda las imágenes en evidencias/admin/.
+ * y desaparecen con la base. Guarda las imágenes en $E2E_SCREENSHOTS/admin/ (carpeta temporal; las capturas del README salen de npm run capturas:reales).
  */
 
 require('../helpers/setup-env');
@@ -15,7 +15,7 @@ const path = require('node:path');
 
 const enabled = process.env.PP_E2E === '1' && process.env.DB_NAME && process.env.DB_NAME !== 'pharma_plus';
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const OUT = path.join(__dirname, '..', '..', 'evidencias', 'admin');
+const OUT = path.join(process.env.E2E_SCREENSHOTS || path.join(require('node:os').tmpdir(), 'pp-e2e-screens'), 'admin');
 const PASSWORD = 'Farmacia2026Segura';
 const ADMIN_ROUTES = ['dashboard', 'pos', 'cash', 'sales', 'returns', 'orders', 'stock', 'batches', 'kardex', 'alerts', 'entries', 'adjustments',
   'transfers', 'products', 'categories', 'laboratories', 'suppliers', 'customers', 'users', 'roles', 'branches', 'settings', 'reports'];
